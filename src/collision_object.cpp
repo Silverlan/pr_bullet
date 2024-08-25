@@ -24,9 +24,9 @@ pragma::physics::BtCollisionObject::BtCollisionObject(IEnvironment &env,std::uni
 	ApplyCollisionShape(&shape);
 }
 
-void pragma::physics::BtCollisionObject::InitializeLuaHandle(lua_State *l,const util::TWeakSharedHandle<IBase> &handle)
+void pragma::physics::BtCollisionObject::InitializeLuaHandle(const util::TWeakSharedHandle<IBase> &handle)
 {
-	ICollisionObject::InitializeLuaHandle(l,handle);
+	ICollisionObject::InitializeLuaHandle(handle);
 	UpdateCCD();
 }
 

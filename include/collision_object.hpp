@@ -34,7 +34,7 @@ namespace pragma::physics
 		};
 		friend IEnvironment;
 		btCollisionObject &GetInternalObject() const;
-		virtual void InitializeLuaHandle(lua_State *l,const util::TWeakSharedHandle<IBase> &handle) override;
+		virtual void InitializeLuaHandle(const util::TWeakSharedHandle<IBase> &handle) override;
 		btCollisionObject &GetBtCollisionObject();
 		virtual BtRigidBody *GetBtRigidBody();
 		const BtRigidBody *GetBtRigidBody() const;
