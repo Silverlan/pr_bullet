@@ -36,7 +36,7 @@ enum class BulletBroadphaseType : uint32_t
 	AxisSweep3_32Bit
 };
 
-const double pragma::physics::BtEnvironment::WORLD_SCALE = util::pragma::units_to_metres(1.0);
+const double pragma::physics::BtEnvironment::WORLD_SCALE = pragma::units_to_metres(1.0);
 const double pragma::physics::BtEnvironment::WORLD_SCALE_SQR = umath::pow(BtEnvironment::WORLD_SCALE,2.0);
 const float pragma::physics::BtEnvironment::CCD_MOTION_THRESHOLD = 4.f *static_cast<float>(WORLD_SCALE);
 const float pragma::physics::BtEnvironment::CCD_SWEPT_SPHERE_RADIUS = 2.f *static_cast<float>(WORLD_SCALE);
