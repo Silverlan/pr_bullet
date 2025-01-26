@@ -73,9 +73,9 @@ foreach(target ${BT_TARGETS})
 	endif()
 endforeach()
 
-pr_add_dependency(${PROJ_NAME} LinearMath TARGET PUBLIC)
+pr_add_dependency(${PROJ_NAME} BulletSoftBody TARGET PUBLIC)
 pr_add_dependency(${PROJ_NAME} BulletDynamics TARGET PUBLIC)
 pr_add_dependency(${PROJ_NAME} BulletCollision TARGET PUBLIC)
-pr_add_dependency(${PROJ_NAME} BulletSoftBody TARGET PUBLIC)
+pr_add_dependency(${PROJ_NAME} LinearMath TARGET PUBLIC)
 
 pr_finalize(${PROJ_NAME} FOLDER "modules/physics/bullet")
