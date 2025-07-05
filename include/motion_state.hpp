@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
+// SPDX-License-Identifier: MIT
+
 #ifndef __PHYS_KINEMATIC_MOTION_STATE_HPP__
 #define __PHYS_KINEMATIC_MOTION_STATE_HPP__
 

@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
+// SPDX-License-Identifier: MIT
+
 #ifndef __PR_BT_DEBUG_HPP__
 #define __PR_BT_DEBUG_HPP__
 
