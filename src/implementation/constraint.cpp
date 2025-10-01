@@ -1,11 +1,11 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "constraint.hpp"
-#include "environment.hpp"
-#include "collision_object.hpp"
-#include <pragma/networkstate/networkstate.h>
-#include <pragma/game/game_coordinate_system.hpp>
+module;
+
+module pragma.modules.bullet;
+
+import :constraint;
 
 pragma::physics::BtConstraint::BtConstraint(pragma::physics::IEnvironment &env,std::unique_ptr<btTypedConstraint> c)
 	: IConstraint{env},m_constraint{std::move(c)}

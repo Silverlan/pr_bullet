@@ -1,15 +1,12 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "collision_object.hpp"
-#include "environment.hpp"
-#include "shape.hpp"
-#include "motion_state.hpp"
-#include "common.hpp"
-#include <pragma/networkstate/networkstate.h>
-#include <pragma/game/game.h>
-#include <pragma/model/modelmesh.h>
-#pragma optimize("",off)
+module;
+
+module pragma.modules.bullet;
+
+import :collision_object;
+
 SimpleMotionState::SimpleMotionState(pragma::physics::BtCollisionObject &o)
 	: collisionObject{o}
 {}

@@ -1,18 +1,17 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "bt_physenv.hpp"
-#include "environment.hpp"
-#include <pragma/physics/environment.hpp>
-#include <pragma/physics/shape.hpp>
-#include <pragma/physics/collision_object.hpp>
-#include <pragma/networkstate/networkstate.h>
-#include <pragma/game/game.h>
-#include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
-#include <BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h>
-#include <BulletCollision/BroadphaseCollision/btBroadphaseInterface.h>
+module;
 
-/* Defined in bullet/src/BulletCollision/CollisionDispatch/btCollisionWorld.cpp */
+module pragma.modules.bullet;
+
+import :common;
+
+btVector3 uvec::create_bt(const Vector3 &v) {return btVector3{v.x,v.y,v.z};}
+btQuaternion uquat::create_bt(const Quat &v) {return btQuaternion{v.x,v.y,v.z,v.w};}
+
+Vector3 uvec::create(const btVector3 &v) {return Vector3{static_cast<float>(v.x()),static_cast<float>(v.y()),static_cast<float>(v.z())};}
+Quat uquat::create(const btQuaternion &v) {return Quat{static_cast<float>(v.w()),static_cast<float>(v.x()),static_cast<float>(v.y()),static_cast<float>(v.z())};}
 
 extern pragma::physics::BtEnvironment *g_simEnvironment; // Current simulated environment
 
@@ -187,7 +186,7 @@ bool btSingleContactCallbackCustom::process(const btBroadphaseProxy* proxy)
 		return true;
 
 	//only perform raycast if filterMask matches
-	if(m_resultCallback.needsCollision(collisionObject->getBroadphaseHandle())) 
+	if(m_resultCallback.needsCollision(collisionObject->getBroadphaseHandle()))
 	{
 		btCollisionObjectWrapper ob0(0,m_collisionObject->getCollisionShape(),m_collisionObject,m_collisionObject->getWorldTransform(),-1,-1);
 		btCollisionObjectWrapper ob1(0,collisionObject->getCollisionShape(),collisionObject,collisionObject->getWorldTransform(),-1,-1);

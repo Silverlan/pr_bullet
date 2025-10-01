@@ -1,33 +1,18 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "environment.hpp"
-#include "collision_object.hpp"
-#include "constraint.hpp"
-#include "controller.hpp"
-#include "shape.hpp"
-#include "material.hpp"
-#include "overlapfiltercallback.hpp"
-#include "debug.hpp"
-#include "kinematic_character_controller.hpp"
+module;
+
 #include <BulletCollision/CollisionDispatch/btCollisionObjectWrapper.h>
 #include <BulletSoftBody/btSoftBodyRigidBodyCollisionConfiguration.h>
 #include <BulletSoftBody/btDefaultSoftBodySolver.h>
 #include <BulletSoftBody/btSoftBodyHelpers.h>
 #include <BulletCollision/BroadphaseCollision/btAxisSweep3.h>
-#include <pragma/entities/entity_component_manager.hpp>
-#include <pragma/networkstate/networkstate.h>
-#include <pragma/game/game.h>
-#include <pragma/util/util_game.hpp>
-#include <pragma/physics/physsoftbodyinfo.hpp>
-#include <pragma/physics/raytraces.h>
-#include <pragma/physics/raycast_filter.hpp>
-#include <pragma/entities/components/base_physics_component.hpp>
-#include <pragma/entities/trigger/base_trigger_touch.hpp>
-#include <pragma/entities/baseentity.h>
-#include <pragma/audio/alsound.h>
-#include <pragma/audio/alsound_type.h>
 #include <unordered_set>
+
+module pragma.modules.bullet;
+
+import :environment;
 
 enum class BulletBroadphaseType : uint32_t
 {

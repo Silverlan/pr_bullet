@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#ifndef __PR_BT_DEBUG_HPP__
-#define __PR_BT_DEBUG_HPP__
+module;
 
-#include "common.hpp"
-#include <pragma/physics/visual_debugger.hpp>
+#include <LinearMath/btIDebugDraw.h>
 
-namespace pragma::physics
+export module pragma.modules.bullet:debug;
+
+export import pragma.shared;
+
+export namespace pragma::physics
 {
 	class BtVisualDebugger
 		: public IVisualDebugger,
@@ -25,5 +27,3 @@ namespace pragma::physics
 		int m_debugMode = 0;
 	};
 };
-
-#endif

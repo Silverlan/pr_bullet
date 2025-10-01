@@ -1,12 +1,23 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "pr_module.hpp"
-#include "environment.hpp"
-#include <sharedutils/util_weak_handle.hpp>
-#include <mathutil/umath.h>
-#include <iostream>
-#include <array>
+module;
+
+#include "module_definitions.hpp"
+
+export module pragma.modules.bullet;
+
+export import :collision_object;
+export import :common;
+export import :constraint;
+export import :controller;
+export import :debug;
+export import :environment;
+export import :kinematic_character_controller;
+export import :material;
+export import :motion_state;
+export import :overlap_filter_callback;
+export import :shape;
 
 extern "C"
 {

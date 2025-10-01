@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "material.hpp"
-#include "environment.hpp"
+module;
+
+module pragma.modules.bullet;
+
+import :material;
 
 pragma::physics::BtMaterial::BtMaterial(BtEnvironment &env,float staticFriction,float dynamicFriction,float restitution)
 	: IMaterial{env},m_staticFriction{staticFriction},m_dynamicFriction{dynamicFriction},m_restitution{restitution}

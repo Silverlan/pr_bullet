@@ -5,8 +5,8 @@ pr_add_module(${PROJ_NAME} SHARED "modules/physics_engines/bullet/")
 
 pr_add_dependency(${PROJ_NAME} shared TARGET PUBLIC)
 
-pr_add_headers(${PROJ_NAME} "include/")
-pr_add_sources(${PROJ_NAME} "src/")
+pr_add_headers(${PROJ_NAME} "src/")
+pr_init_module(${PROJ_NAME})
 
 pr_add_compile_definitions(${PROJ_NAME} -D_ENABLE_EXTENDED_ALIGNED_STORAGE -DBT_USE_DOUBLE_PRECISION PUBLIC)
 

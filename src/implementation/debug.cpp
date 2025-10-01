@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "debug.hpp"
-#include "environment.hpp"
+module;
+
+module pragma.modules.bullet;
+
+import :debug;
 
 void pragma::physics::BtVisualDebugger::setDebugMode(int debugMode)
 {

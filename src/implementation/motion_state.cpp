@@ -1,8 +1,11 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "motion_state.hpp"
-#include "environment.hpp"
+module;
+
+module pragma.modules.bullet;
+
+import :motion_state;
 
 KinematicMotionState::KinematicMotionState(pragma::physics::BtCollisionObject &o,const umath::Transform &initialTransform)
 	: SimpleMotionState{o},m_transform{initialTransform}

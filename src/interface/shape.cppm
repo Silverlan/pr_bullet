@@ -1,16 +1,24 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#ifndef __PR_PX_SHAPE_HPP__
-#define __PR_PX_SHAPE_HPP__
+module;
 
-#include <pragma/physics/shape.hpp>
-#include "common.hpp"
+#include "mathutil/uvec.h"
+#include "mathutil/transform.hpp"
+#include <BulletCollision/CollisionShapes/btCollisionShape.h>
+#include <BulletCollision/CollisionShapes/btConvexShape.h>
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <BulletCollision/CollisionShapes/btCompoundShape.h>
+#include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
+#include <BulletCollision/CollisionShapes/btBvhTriangleMeshShape.h>
+#include <BulletCollision/CollisionShapes/btTriangleIndexVertexArray.h>
 
-namespace pragma::physics
+export module pragma.modules.bullet:shape;
+
+export import pragma.shared;
+
+export namespace pragma::physics
 {
-	class BtEnvironment;
-	class btShape;
 	class BtShape
 		: virtual public pragma::physics::IShape
 	{
@@ -122,5 +130,3 @@ namespace pragma::physics
 		std::vector<btVector3> m_btVerts;
 	};
 };
-
-#endif

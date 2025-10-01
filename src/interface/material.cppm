@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#ifndef __PR_PX_MATERIAL_HPP__
-#define __PR_PX_MATERIAL_HPP__
+module;
 
-#include <pragma/physics/phys_material.hpp>
 #include <memory>
 
-namespace pragma::physics
+export module pragma.modules.bullet:material;
+
+export import pragma.shared;
+
+export namespace pragma::physics
 {
 	class BtEnvironment;
 	class BtMaterial
@@ -27,5 +29,3 @@ namespace pragma::physics
 		float m_restitution = 0.f;
 	};
 };
-
-#endif

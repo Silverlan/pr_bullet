@@ -1,17 +1,14 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "controller.hpp"
-#include "environment.hpp"
-#include "collision_object.hpp"
-#include "shape.hpp"
-#include "kinematic_character_controller.hpp"
-#include <pragma/networkstate/networkstate.h>
-#include <pragma/game/game.h>
-#include <pragma/entities/entity_component_manager.hpp>
-#include <pragma/entities/components/base_character_component.hpp>
+module;
+
 #include <BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h>
 #include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
+
+module pragma.modules.bullet;
+
+import :controller;
 
 Vector3 pragma::physics::PhysContactInfo::GetContactNormal(const Vector3 &n,int8_t controllerIndex)
 {

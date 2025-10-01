@@ -1,23 +1,21 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#ifndef __PR_BT_CONTROLLER_HPP__
-#define __PR_BT_CONTROLLER_HPP__
+module;
 
-#include <pragma/physics/controller.hpp>
 #include <mathutil/uvec.h>
+#include "sharedutils/util_shared_handle.hpp"
 #include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
+#include <optional>
 
-class PhysKinematicCharacterController;
-class btCollisionObject;
-class btManifoldPoint;
-namespace pragma::physics
+export module pragma.modules.bullet:controller;
+
+export import :kinematic_character_controller;
+export import :shape;
+export import pragma.shared;
+
+export namespace pragma::physics
 {
-	class BtEnvironment;
-	class IShape;
-	class IGhostObject;
-	class BtConvexShape;
-
 	struct PhysContactInfo
 	{
 		static Vector3 GetContactNormal(const Vector3 &n,int8_t controllerIndex);
@@ -46,6 +44,7 @@ namespace pragma::physics
 		double minContactDistance = std::numeric_limits<double>::max(); // Minimum XZ distance for ALL contact points (in this tick)
 	};
 
+	class BtEnvironment;
 	class BtController
 		: virtual public IController
 	{
@@ -102,5 +101,3 @@ namespace pragma::physics
 		std::shared_ptr<pragma::physics::BtConvexShape> m_shape = nullptr;
 	};
 };
-
-#endif

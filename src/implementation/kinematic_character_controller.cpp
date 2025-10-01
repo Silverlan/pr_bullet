@@ -13,6 +13,7 @@ subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
+module;
 
 #include <stdio.h>
 #include "LinearMath/btIDebugDraw.h"
@@ -22,8 +23,10 @@ subject to the following restrictions:
 #include "BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h"
 #include "BulletCollision/CollisionDispatch/btCollisionWorld.h"
 #include "LinearMath/btDefaultMotionState.h"
-#include "kinematic_character_controller.hpp"
 
+module pragma.modules.bullet;
+
+import :kinematic_character_controller;
 
 // static helper method
 static btVector3

@@ -1,13 +1,15 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#include "shape.hpp"
-#include "environment.hpp"
-#include <pragma/physics/collisionmesh.h>
-#include <pragma/math/surfacematerial.h>
+module;
+
 #include <BulletCollision/CollisionDispatch/btInternalEdgeUtility.h>
 #include <BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h>
 #include <BulletCollision/CollisionShapes/btTriangleIndexVertexMaterialArray.h>
+
+module pragma.modules.bullet;
+
+import :shape;
 
 //////////////////////////////////
 
