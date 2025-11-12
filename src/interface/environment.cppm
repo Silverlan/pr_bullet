@@ -3,14 +3,8 @@
 
 module;
 
-#include <unordered_set>
-#include <queue>
 #include <BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
-#include <sharedutils/util_hash.hpp>
-#include "mathutil/transform.hpp"
-#include "mathutil/color.h"
-#include "sharedutils/util_shared_handle.hpp"
 #include <BulletDynamics/Dynamics/btDiscreteDynamicsWorldMt.h>
 #include <BulletSoftBody/btSoftBody.h>
 #include <BulletSoftBody/btSoftBodySolvers.h>
@@ -28,12 +22,6 @@ export module pragma.modules.bullet:environment;
 export import :collision_object;
 export import :overlap_filter_callback;
 export import pragma.shared;
-
-#define PHYS_WORLD_TYPE_DISCRETE_DYNAMICS 0
-#define PHYS_WORLD_TYPE_DISCRETE_DYNAMICS_MT 1
-#define PHYS_WORLD_SOFT_RIGID_DYNAMICS 2
-
-#define PHYS_WORLD_TYPE PHYS_WORLD_TYPE_DISCRETE_DYNAMICS_MT
 
 export namespace pragma::physics
 {

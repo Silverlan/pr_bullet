@@ -10,8 +10,6 @@ module;
 #include <BulletDynamics/ConstraintSolver/btSliderConstraint.h>
 #include <BulletDynamics/ConstraintSolver/btConeTwistConstraint.h>
 #include <BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h>
-#include "mathutil/uvec.h"
-#include "mathutil/transform.hpp"
 
 export module pragma.modules.bullet:constraint;
 

@@ -4,6 +4,7 @@
 module;
 
 #include <BulletCollision/BroadphaseCollision/btOverlappingPairCache.h>
+#include <BulletCollision/CollisionDispatch/btCollisionObject.h>
 
 export module pragma.modules.bullet:overlap_filter_callback;
 

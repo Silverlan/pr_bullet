@@ -3,10 +3,8 @@
 
 module;
 
-#include <mathutil/uvec.h>
-#include "sharedutils/util_shared_handle.hpp"
+#include <BulletCollision/CollisionDispatch/btCollisionObject.h>
 #include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
-#include <optional>
 
 export module pragma.modules.bullet:controller;
 

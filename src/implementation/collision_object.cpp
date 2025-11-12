@@ -3,6 +3,10 @@
 
 module;
 
+#include <BulletSoftBody/btSoftBody.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <LinearMath/btTransform.h>
+
 module pragma.modules.bullet;
 
 import :collision_object;

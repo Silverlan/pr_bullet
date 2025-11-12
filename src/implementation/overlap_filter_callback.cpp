@@ -3,6 +3,8 @@
 
 module;
 
+#include <BulletCollision/CollisionDispatch/btCollisionObject.h>
+
 module pragma.modules.bullet;
 
 import :overlap_filter_callback;
@@ -73,8 +75,8 @@ bool PhysOverlapFilterCallback::needBroadphaseCollision(btBroadphaseProxy* proxy
 			auto *phys2 = t2->GetPhysObj();
 			if(phys1 != nullptr && phys2 != nullptr)
 			{
-				bShouldCollide = (phys1->GetCollisionFilter() &phys2->GetCollisionFilterMask()) != CollisionMask::None;
-				bShouldCollide = bShouldCollide && ((phys2->GetCollisionFilterMask() &phys1->GetCollisionFilter()) != CollisionMask::None);
+				bShouldCollide = (phys1->GetCollisionFilter() &phys2->GetCollisionFilterMask()) != pragma::physics::CollisionMask::None;
+				bShouldCollide = bShouldCollide && ((phys2->GetCollisionFilterMask() &phys1->GetCollisionFilter()) != pragma::physics::CollisionMask::None);
 				auto *ent1 = &phys1->GetOwner()->GetEntity();
 				auto pPhysComponent1 = ent1->GetPhysicsComponent();
 				auto *ent2 = &phys2->GetOwner()->GetEntity();

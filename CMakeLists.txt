@@ -3,6 +3,21 @@ include(${CMAKE_SOURCE_DIR}/cmake/pr_common.cmake)
 set(PROJ_NAME pr_bullet)
 pr_add_module(${PROJ_NAME} SHARED "modules/physics_engines/bullet/")
 
+set(PHYS_WORLD_TYPE "PHYS_WORLD_TYPE_DISCRETE_DYNAMICS_MT"
+    CACHE STRING "Physics world type (select one)."
+)
+set_property(CACHE PHYS_WORLD_TYPE PROPERTY STRINGS
+    "PHYS_WORLD_TYPE_DISCRETE_DYNAMICS"
+    "PHYS_WORLD_TYPE_DISCRETE_DYNAMICS_MT"
+    "PHYS_WORLD_SOFT_RIGID_DYNAMICS"
+)
+target_compile_definitions(${PROJ_NAME} PRIVATE
+    PHYS_WORLD_TYPE_DISCRETE_DYNAMICS=0
+    PHYS_WORLD_TYPE_DISCRETE_DYNAMICS_MT=1
+    PHYS_WORLD_SOFT_RIGID_DYNAMICS=2
+    PHYS_WORLD_TYPE=${PHYS_WORLD_TYPE}
+)
+
 pr_add_dependency(${PROJ_NAME} shared TARGET PUBLIC)
 
 pr_add_headers(${PROJ_NAME} "src/")

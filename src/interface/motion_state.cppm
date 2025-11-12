@@ -3,10 +3,12 @@
 
 module;
 
-#include <mathutil/transform.hpp>
 #include <LinearMath/btMotionState.h>
+#include <LinearMath/btTransform.h>
 
 export module pragma.modules.bullet:motion_state;
+
+export import pragma.math;
 
 export {
 	namespace pragma::physics {class BtCollisionObject;};

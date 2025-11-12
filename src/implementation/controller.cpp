@@ -5,6 +5,8 @@ module;
 
 #include <BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h>
 #include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
+#include <BulletCollision/CollisionShapes/btConvexInternalShape.h>
+#include <BulletCollision/CollisionDispatch/btCollisionObject.h>
 
 module pragma.modules.bullet;
 
@@ -291,7 +293,7 @@ bool pragma::physics::BtController::SetGroundContactPoint(const btManifoldPoint 
 	auto bGroundWalkable = (angle <= umath::deg_to_rad(slopeLimit));
 
 	auto pos = uvec::create(((idx == 0) ? contactPoint.getPositionWorldOnA() : contactPoint.getPositionWorldOnB()) /BtEnvironment::WORLD_SCALE);
-	//GetOwner()->GetEntity().GetNetworkState()->GetGameState()->DrawLine(pos,pos +n *100.f,Color::Red,0.3f);
+	//GetOwner()->GetEntity().GetNetworkState()->GetGameState()->DrawLine(pos,pos +n *100.f,colors::Red,0.3f);
 	if(bGroundWalkable == false)
 	{
 		// Discard this point if we already have a walkable point (even if this point is closer)

@@ -15,7 +15,6 @@ subject to the following restrictions:
 
 module;
 
-#include <stdio.h>
 #include "LinearMath/btIDebugDraw.h"
 #include "BulletCollision/CollisionDispatch/btGhostObject.h"
 #include "BulletCollision/CollisionShapes/btMultiSphereShape.h"

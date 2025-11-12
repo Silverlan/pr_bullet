@@ -7,9 +7,10 @@ module;
 #include <BulletCollision/CollisionDispatch/btManifoldResult.h>
 #include <LinearMath/btQuaternion.h>
 #include <LinearMath/btVector3.h>
-#include <mathutil/uvec.h>
 
 export module pragma.modules.bullet:common;
+
+export import pragma.math;
 
 export {
 	namespace uvec

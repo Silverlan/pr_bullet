@@ -3,6 +3,8 @@
 
 module;
 
+#include <LinearMath/btVector3.h>
+
 module pragma.modules.bullet;
 
 import :debug;

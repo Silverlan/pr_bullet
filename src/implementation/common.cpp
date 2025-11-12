@@ -3,6 +3,12 @@
 
 module;
 
+#include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
+#include <BulletCollision/CollisionDispatch/btManifoldResult.h>
+#include <BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h>
+#include <LinearMath/btQuaternion.h>
+#include <LinearMath/btVector3.h>
+
 module pragma.modules.bullet;
 
 import :common;
@@ -34,8 +40,7 @@ static btScalar calculateCombinedRestitution(float restitution0,float restitutio
 	return restitution0 *restitution1;
 }
 
-extern ContactAddedCallback gContactAddedCallback;
-static bool get_collision_object_properties(Game *game,const btCollisionObject *o,float *friction,float *restitution)
+static bool get_collision_object_properties(pragma::Game *game,const btCollisionObject *o,float *friction,float *restitution)
 {
 	*friction = 1.f;
 	*restitution = 1.f;

@@ -3,12 +3,12 @@
 
 module;
 
-#include "mathutil/transform.hpp"
-#include "sharedutils/util_shared_handle.hpp"
 #include <BulletSoftBody/btSoftBody.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
 export module pragma.modules.bullet:collision_object;
 
+import :shape;
 import pragma.shared;
 
 export {
@@ -324,6 +324,10 @@ export {
 			virtual void DoAddWorldObject() override;
 			virtual void RemoveWorldObject() override;
 		};
+		using namespace umath::scoped_enum::bitwise;
 	};
-	REGISTER_BASIC_BITWISE_OPERATORS(pragma::physics::BtCollisionObject::BtStateFlags)
+	namespace umath::scoped_enum::bitwise {
+		template<>
+		struct enable_bitwise_operators<pragma::physics::BtCollisionObject::BtStateFlags> : std::true_type {};
+	}
 };

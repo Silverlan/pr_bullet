@@ -3,8 +3,6 @@
 
 module;
 
-#include "mathutil/uvec.h"
-#include "mathutil/transform.hpp"
 #include <BulletCollision/CollisionShapes/btCollisionShape.h>
 #include <BulletCollision/CollisionShapes/btConvexShape.h>
 #include <BulletCollision/CollisionShapes/btConvexHullShape.h>

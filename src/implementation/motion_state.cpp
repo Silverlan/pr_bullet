@@ -3,6 +3,8 @@
 
 module;
 
+#include <LinearMath/btTransform.h>
+
 module pragma.modules.bullet;
 
 import :motion_state;

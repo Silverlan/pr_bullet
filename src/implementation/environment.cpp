@@ -8,7 +8,27 @@ module;
 #include <BulletSoftBody/btDefaultSoftBodySolver.h>
 #include <BulletSoftBody/btSoftBodyHelpers.h>
 #include <BulletCollision/BroadphaseCollision/btAxisSweep3.h>
-#include <unordered_set>
+#include <BulletCollision/CollisionDispatch/btDefaultCollisionConfiguration.h>
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <BulletDynamics/Dynamics/btDiscreteDynamicsWorldMt.h>
+#include <BulletSoftBody/btSoftBody.h>
+#include <BulletSoftBody/btSoftBodySolvers.h>
+#include <BulletDynamics/ConstraintSolver/btTypedConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btFixedConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btHingeConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btSliderConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btConeTwistConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btGeneric6DofConstraint.h>
+#include <BulletDynamics/ConstraintSolver/btSequentialImpulseConstraintSolver.h>
+#include <BulletSoftBody/btSoftRigidDynamicsWorld.h>
+#include <BulletCollision/CollisionShapes/btCapsuleShape.cpp>
+#include <BulletCollision/CollisionShapes/btBoxShape.cpp>
+#include <BulletCollision/CollisionShapes/btCylinderShape.h>
+#include <BulletCollision/CollisionShapes/btConvexHullShape.h>
+#include <BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h>
+#include <BulletCollision/CollisionShapes/btSphereShape.h>
+#include <LinearMath/btQuickprof.h>
 
 module pragma.modules.bullet;
 
@@ -27,13 +47,71 @@ const float pragma::physics::BtEnvironment::CCD_SWEPT_SPHERE_RADIUS = 2.f *stati
 static const float PHYS_CONSTRAINT_DEBUG_DRAW_SIZE = 100.f;
 static const auto PHYS_BULLET_BROADPHASE_TYPE = BulletBroadphaseType::AxisSweep3_32Bit;
 
+namespace pragma::physics
+{
+	class BtDebugDrawer
+		: public btIDebugDraw
+	{
+	public:
+		BtDebugDrawer(pragma::physics::BtEnvironment &env,pragma::physics::IVisualDebugger &debugger)
+			: m_env{env},m_debugger{debugger}
+		{}
+		virtual ~BtDebugDrawer() override {}
+		virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& fromColor, const btVector3& toColor) override
+		{
+			m_debugger.DrawLine(
+				pragma::physics::BtEnvironment::ToPragmaPosition(from),pragma::physics::BtEnvironment::ToPragmaPosition(to),
+				pragma::physics::BtEnvironment::ToPragmaColor(fromColor),pragma::physics::BtEnvironment::ToPragmaColor(toColor)
+			);
+		}
+		virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color) override
+		{
+			m_debugger.DrawLine(
+				pragma::physics::BtEnvironment::ToPragmaPosition(from),pragma::physics::BtEnvironment::ToPragmaPosition(to),
+				pragma::physics::BtEnvironment::ToPragmaColor(color)
+			);
+		}
+		virtual void drawSphere(const btVector3& p, btScalar radius, const btVector3& color) override
+		{
+			// TODO
+		}
+		virtual void drawTriangle(const btVector3& a, const btVector3& b, const btVector3& c, const btVector3& color, btScalar alpha) override
+		{
+			auto col = pragma::physics::BtEnvironment::ToPragmaColor(color);
+			col.a = alpha *255.f;
+			m_debugger.DrawTriangle(
+				pragma::physics::BtEnvironment::ToPragmaPosition(a),pragma::physics::BtEnvironment::ToPragmaPosition(b),pragma::physics::BtEnvironment::ToPragmaPosition(c),
+				col,col,col
+			);
+		}
+		virtual void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) override
+		{
+			m_debugger.DrawPoint(pragma::physics::BtEnvironment::ToPragmaPosition(PointOnB),pragma::physics::BtEnvironment::ToPragmaColor(color));
+		}
+		virtual void reportErrorWarning(const char* warningString) override
+		{
+			m_debugger.ReportErrorWarning(warningString);
+		}
+		virtual void draw3dText(const btVector3& location, const char* textString) override
+		{
+			m_debugger.DrawText(textString,pragma::physics::BtEnvironment::ToPragmaPosition(location),colors::White,1.f);
+		}
+		virtual void setDebugMode(int debugMode) override {m_debugMode = debugMode;}
+		virtual int getDebugMode() const override { return m_debugMode; }
+	private:
+		pragma::physics::BtEnvironment &m_env;
+		pragma::physics::IVisualDebugger &m_debugger;
+		int m_debugMode = 0;
+	};
+};
+
 pragma::physics::BtEnvironment *g_simEnvironment = nullptr;
 #pragma optimize("",off)
 class PhysBulletWorld
-	: public btWorldType
+	: public pragma::physics::btWorldType
 {
 public:
-	using btWorldType::btWorldType;
+	using pragma::physics::btWorldType::btWorldType;
 	virtual void updateAabbs() override
 	{
 		BT_PROFILE("updateAabbs");
@@ -164,63 +242,6 @@ void pragma::physics::BtEnvironment::UpdateSurfaceTypes()
 pragma::physics::BtRigidBody &pragma::physics::BtEnvironment::ToBtType(IRigidBody &body) {return dynamic_cast<BtRigidBody&>(body);}
 float pragma::physics::BtEnvironment::GetWorldScale() const {return WORLD_SCALE;}
 
-namespace pragma::physics
-{
-	class BtDebugDrawer
-		: public btIDebugDraw
-	{
-	public:
-		BtDebugDrawer(pragma::physics::BtEnvironment &env,pragma::physics::IVisualDebugger &debugger)
-			: m_env{env},m_debugger{debugger}
-		{}
-		virtual ~BtDebugDrawer() override {}
-		virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& fromColor, const btVector3& toColor) override
-		{
-			m_debugger.DrawLine(
-				pragma::physics::BtEnvironment::ToPragmaPosition(from),pragma::physics::BtEnvironment::ToPragmaPosition(to),
-				pragma::physics::BtEnvironment::ToPragmaColor(fromColor),pragma::physics::BtEnvironment::ToPragmaColor(toColor)
-			);
-		}
-		virtual void drawLine(const btVector3& from, const btVector3& to, const btVector3& color) override
-		{
-			m_debugger.DrawLine(
-				pragma::physics::BtEnvironment::ToPragmaPosition(from),pragma::physics::BtEnvironment::ToPragmaPosition(to),
-				pragma::physics::BtEnvironment::ToPragmaColor(color)
-			);
-		}
-		virtual void drawSphere(const btVector3& p, btScalar radius, const btVector3& color) override
-		{
-			// TODO
-		}
-		virtual void drawTriangle(const btVector3& a, const btVector3& b, const btVector3& c, const btVector3& color, btScalar alpha) override
-		{
-			auto col = pragma::physics::BtEnvironment::ToPragmaColor(color);
-			col.a = alpha *255.f;
-			m_debugger.DrawTriangle(
-				pragma::physics::BtEnvironment::ToPragmaPosition(a),pragma::physics::BtEnvironment::ToPragmaPosition(b),pragma::physics::BtEnvironment::ToPragmaPosition(c),
-				col,col,col
-			);
-		}
-		virtual void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) override
-		{
-			m_debugger.DrawPoint(pragma::physics::BtEnvironment::ToPragmaPosition(PointOnB),pragma::physics::BtEnvironment::ToPragmaColor(color));
-		}
-		virtual void reportErrorWarning(const char* warningString) override
-		{
-			m_debugger.ReportErrorWarning(warningString);
-		}
-		virtual void draw3dText(const btVector3& location, const char* textString) override
-		{
-			m_debugger.DrawText(textString,pragma::physics::BtEnvironment::ToPragmaPosition(location),Color::White,1.f);
-		}
-		virtual void setDebugMode(int debugMode) override {m_debugMode = debugMode;}
-		virtual int getDebugMode() const override { return m_debugMode; }
-	private:
-		pragma::physics::BtEnvironment &m_env;
-		pragma::physics::IVisualDebugger &m_debugger;
-		int m_debugMode = 0;
-	};
-};
 void pragma::physics::BtEnvironment::OnVisualDebuggerChanged(pragma::physics::IVisualDebugger *debugger)
 {
 	if(!debugger)
@@ -326,7 +347,7 @@ btSoftBodySolver *pragma::physics::BtEnvironment::GetSoftBodySolver()
 #endif
 }
 const btSoftBodySolver *pragma::physics::BtEnvironment::GetSoftBodySolver() const {return const_cast<BtEnvironment*>(this)->GetSoftBodySolver();}
-btWorldType *pragma::physics::BtEnvironment::GetWorld() {return m_btWorld.get();}
+pragma::physics::btWorldType *pragma::physics::BtEnvironment::GetWorld() {return m_btWorld.get();}
 btDefaultCollisionConfiguration *pragma::physics::BtEnvironment::GetBtCollisionConfiguration() {return m_btCollisionConfiguration.get();}
 btCollisionDispatcher *pragma::physics::BtEnvironment::GetBtCollisionDispatcher() {return m_btDispatcher.get();}
 btBroadphaseInterface *pragma::physics::BtEnvironment::GetBtOverlappingPairCache() {return m_btOverlappingPairCache.get();}
@@ -582,7 +603,7 @@ std::shared_ptr<pragma::physics::ICompoundShape> pragma::physics::BtEnvironment:
 	return CreateSharedPtr<BtCompoundShape>(*this);
 	//return CreateSharedPtr<BtCompoundShape>(*this,std::make_shared<btCompoundShape>(),shapes);
 }
-std::shared_ptr<pragma::physics::IShape> pragma::physics::BtEnvironment::CreateHeightfieldTerrainShape(uint32_t width,uint32_t length,Scalar maxHeight,uint32_t upAxis,const IMaterial &mat)
+std::shared_ptr<pragma::physics::IShape> pragma::physics::BtEnvironment::CreateHeightfieldTerrainShape(uint32_t width,uint32_t length,double maxHeight,uint32_t upAxis,const IMaterial &mat)
 {
 	std::vector<Vector3> data {}; // TODO: Pass data as argument
 	data.resize(width *length);
@@ -1274,7 +1295,7 @@ pragma::physics::IEnvironment::RemainingDeltaTime pragma::physics::BtEnvironment
 }
 
 // Update physics info for character controllers
-static void update_physics_contact_controller_info(Game *game,int idx,const btCollisionObject *o,const btCollisionObject *oOther,btPersistentManifold *contactManifold)
+static void update_physics_contact_controller_info(pragma::Game *game,int idx,const btCollisionObject *o,const btCollisionObject *oOther,btPersistentManifold *contactManifold)
 {
 	auto *col = static_cast<pragma::physics::ICollisionObject*>(o->getUserPointer());
 	auto *colOther = static_cast<pragma::physics::ICollisionObject*>(oOther->getUserPointer());
@@ -1283,7 +1304,7 @@ static void update_physics_contact_controller_info(Game *game,int idx,const btCo
 	auto *phys = col->GetPhysObj();
 	if(phys == nullptr || phys->IsController() == false || (colOther != nullptr && colOther->IsTrigger() == true))
 		return;
-	if((col->GetCollisionFilterMask() &colOther->GetCollisionFilterGroup()) == CollisionMask::None || (colOther->GetCollisionFilterMask() &col->GetCollisionFilterGroup()) == CollisionMask::None)
+	if((col->GetCollisionFilterMask() &colOther->GetCollisionFilterGroup()) == pragma::physics::CollisionMask::None || (colOther->GetCollisionFilterMask() &col->GetCollisionFilterGroup()) == pragma::physics::CollisionMask::None)
 		return;
 
 	auto *shape = o->getCollisionShape();
@@ -1316,8 +1337,6 @@ static void update_physics_contact_controller_info(Game *game,int idx,const btCo
 
 //typedef void (*ContactStartedCallback)(btPersistentManifold* const& manifold);
 //typedef void (*ContactEndedCallback)(btPersistentManifold* const& manifold);
-extern ContactStartedCallback gContactStartedCallback;
-extern ContactEndedCallback gContactEndedCallback;
 
 static pragma::physics::BtEnvironment *get_phys_env(const btPersistentManifold &manifold)
 {
@@ -1379,7 +1398,7 @@ static void onContactStarted(btPersistentManifold* const& manifold)
 								surface = game->GetSurfaceMaterial(0);
 								sndImpact = (bHardImpact == false) ? surface->GetSoftImpactSound() : surface->GetHardImpactSound();
 							}
-							auto snd = nw.CreateSound(sndImpact,ALSoundType::Effect | ALSoundType::Physics,ALCreateFlags::Mono);
+							auto snd = nw.CreateSound(sndImpact,pragma::audio::ALSoundType::Effect | pragma::audio::ALSoundType::Physics,pragma::audio::ALCreateFlags::Mono);
 							if(snd != nullptr)
 							{
 								auto pos = pt.getPositionWorldOnB() /pragma::physics::BtEnvironment::WORLD_SCALE;
