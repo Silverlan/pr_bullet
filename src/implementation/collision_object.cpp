@@ -6,6 +6,7 @@ module;
 #include <BulletSoftBody/btSoftBody.h>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 #include <LinearMath/btTransform.h>
+#include <cassert>
 
 module pragma.modules.bullet;
 

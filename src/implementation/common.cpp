@@ -6,6 +6,7 @@ module;
 #include <BulletCollision/CollisionDispatch/btCollisionWorld.h>
 #include <BulletCollision/CollisionDispatch/btManifoldResult.h>
 #include <BulletCollision/CollisionShapes/btMultimaterialTriangleMeshShape.h>
+#include <BulletCollision/BroadphaseCollision/btCollisionAlgorithm.h>
 #include <LinearMath/btQuaternion.h>
 #include <LinearMath/btVector3.h>
 
