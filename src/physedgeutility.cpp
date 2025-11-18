@@ -505,7 +505,7 @@ void _btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectW
 						auto posA = Vector3{cp.m_positionWorldOnA.x(),cp.m_positionWorldOnA.y(),cp.m_positionWorldOnA.z()} /static_cast<float>(PhysEnv::WORLD_SCALE);
 						auto posB = Vector3{cp.m_positionWorldOnB.x(),cp.m_positionWorldOnB.y(),cp.m_positionWorldOnB.z()} /static_cast<float>(PhysEnv::WORLD_SCALE);
 						if(game->IsClient() == true)
-							game->DrawLine(posA,posB,Color::Red,12.f);
+							game->DrawLine(posA,posB,colors::Red,12.f);
 						auto d = posB -posA;
 						//Con::cwar<<"Delta: ("<<d.x<<","<<d.y<<","<<d.z<<")"<<Con::endl;
 

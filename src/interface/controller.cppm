@@ -1,29 +1,23 @@
 // SPDX-FileCopyrightText: (c) 2019 Silverlan <opensource@pragma-engine.com>
 // SPDX-License-Identifier: MIT
 
-#ifndef __PR_BT_CONTROLLER_HPP__
-#define __PR_BT_CONTROLLER_HPP__
+module;
 
-#include <pragma/physics/controller.hpp>
-#include <mathutil/uvec.h>
+#include <BulletCollision/CollisionDispatch/btCollisionObject.h>
 #include <BulletCollision/NarrowPhaseCollision/btManifoldPoint.h>
 
-class PhysKinematicCharacterController;
-class btCollisionObject;
-class btManifoldPoint;
-namespace pragma::physics
-{
-	class BtEnvironment;
-	class IShape;
-	class IGhostObject;
-	class BtConvexShape;
+export module pragma.modules.bullet:controller;
 
-	struct PhysContactInfo
-	{
-		static Vector3 GetContactNormal(const Vector3 &n,int8_t controllerIndex);
-		static double CalcXZDistance(const btManifoldPoint &contactPoint,int8_t controllerIndex);
+export import :kinematic_character_controller;
+export import :shape;
+export import pragma.shared;
 
-		PhysContactInfo(const btManifoldPoint &contactPoint,int8_t controllerIndex);
+export namespace pragma::physics {
+	struct PhysContactInfo {
+		static Vector3 GetContactNormal(const Vector3 &n, int8_t controllerIndex);
+		static double CalcXZDistance(const btManifoldPoint &contactPoint, int8_t controllerIndex);
+
+		PhysContactInfo(const btManifoldPoint &contactPoint, int8_t controllerIndex);
 		Vector3 GetContactNormal() const;
 		double CalcXZDistance() const;
 		btManifoldPoint contactPoint {};
@@ -35,21 +29,17 @@ namespace pragma::physics
 		int8_t controllerIndex = -1; // = 0 if the controller is object 0 in 'contactPoint', otherwise 1
 	};
 
-	struct GroundInfo
-	{
-		GroundInfo(const btManifoldPoint &contactPoint,int8_t controllerIndex)
-			: contactInfo{contactPoint,controllerIndex}
-		{}
+	struct GroundInfo {
+		GroundInfo(const btManifoldPoint &contactPoint, int8_t controllerIndex) : contactInfo {contactPoint, controllerIndex} {}
 		PhysContactInfo contactInfo;
 		bool groundWalkable = false;
-		double contactDistance = std::numeric_limits<double>::max(); // Distance on XZ plane; Used to determine best contact point candidate
+		double contactDistance = std::numeric_limits<double>::max();    // Distance on XZ plane; Used to determine best contact point candidate
 		double minContactDistance = std::numeric_limits<double>::max(); // Minimum XZ distance for ALL contact points (in this tick)
 	};
 
-	class BtController
-		: virtual public IController
-	{
-	public:
+	class BtEnvironment;
+	class BtController : virtual public IController {
+	  public:
 		friend IEnvironment;
 		friend BtEnvironment;
 
@@ -86,10 +76,10 @@ namespace pragma::physics
 		const pragma::physics::BtConvexShape *GetShape() const;
 		pragma::physics::BtConvexShape *GetShape();
 
-		bool SetGroundContactPoint(const btManifoldPoint &contactPoint,int32_t idx,const btCollisionObject *o,const btCollisionObject *oOther);
+		bool SetGroundContactPoint(const btManifoldPoint &contactPoint, int32_t idx, const btCollisionObject *o, const btCollisionObject *oOther);
 		void ClearGroundContactPoint();
-	protected:
-		BtController(IEnvironment &env,const std::shared_ptr<BtConvexShape> &shape,const util::TSharedHandle<IGhostObject> &ghostObject,std::unique_ptr<PhysKinematicCharacterController> controller,const Vector3 &halfExtents,ShapeType shapeType);
+	  protected:
+		BtController(IEnvironment &env, const std::shared_ptr<BtConvexShape> &shape, const util::TSharedHandle<IGhostObject> &ghostObject, std::unique_ptr<PhysKinematicCharacterController> controller, const Vector3 &halfExtents, ShapeType shapeType);
 		virtual void RemoveWorldObject() override;
 		virtual void DoAddWorldObject() override;
 		virtual void DoMove(Vector3 &disp) override;
@@ -102,5 +92,3 @@ namespace pragma::physics
 		std::shared_ptr<pragma::physics::BtConvexShape> m_shape = nullptr;
 	};
 };
-
-#endif
