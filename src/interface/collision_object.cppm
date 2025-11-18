@@ -12,23 +12,14 @@ import :shape;
 import pragma.shared;
 
 export {
-	namespace pragma::physics
-	{
+	namespace pragma::physics {
 		class BtEnvironment;
 		class BtGhostObject;
 		class BtRigidBody;
 		class BtSoftBody;
-		class BtCollisionObject
-			: virtual public ICollisionObject
-		{
-		public:
-			enum class BtStateFlags : uint32_t
-			{
-				None = 0u,
-				CcdEnabled = 1u,
-				Awake = CcdEnabled<<1u,
-				WorldObjectRemoved = Awake<<1u
-			};
+		class BtCollisionObject : virtual public ICollisionObject {
+		  public:
+			enum class BtStateFlags : uint32_t { None = 0u, CcdEnabled = 1u, Awake = CcdEnabled << 1u, WorldObjectRemoved = Awake << 1u };
 			friend IEnvironment;
 			btCollisionObject &GetInternalObject() const;
 			virtual void InitializeLuaHandle(const util::TWeakSharedHandle<IBase> &handle) override;
@@ -59,7 +50,7 @@ export {
 			virtual void SetSleepReportEnabled(bool reportEnabled) override;
 			virtual bool IsSleepReportEnabled() const override;
 
-			virtual void WakeUp(bool forceActivation=false) override;
+			virtual void WakeUp(bool forceActivation = false) override;
 			virtual void PutToSleep() override;
 			virtual void SetContactProcessingThreshold(float threshold) override;
 			virtual void ApplyCollisionShape(pragma::physics::IShape *optShape) override;
@@ -67,7 +58,7 @@ export {
 			virtual void DoSetCollisionFilterMask(CollisionMask mask) override;
 
 			virtual void SetCCDEnabled(bool b) override;
-			virtual void GetAABB(Vector3 &min,Vector3 &max) const override;
+			virtual void GetAABB(Vector3 &min, Vector3 &max) const override;
 			virtual Vector3 GetPos() const override;
 			virtual void SetPos(const Vector3 &pos) override;
 			virtual Quat GetRotation() const override;
@@ -81,12 +72,12 @@ export {
 			virtual bool IsSimulationEnabled() const override;
 			virtual void SetCollisionsEnabled(bool enabled) override;
 
-			void SetAwake(bool awake,bool removeFromGlobalAwakeList=true);
+			void SetAwake(bool awake, bool removeFromGlobalAwakeList = true);
 			static void UpdateAwakeStates(uint64_t tick);
-		protected:
+		  protected:
 			void OnAddWorldObject();
 			void OnRemoveWorldObject();
-			BtCollisionObject(IEnvironment &env,std::unique_ptr<btCollisionObject> o,IShape &shape);
+			BtCollisionObject(IEnvironment &env, std::unique_ptr<btCollisionObject> o, IShape &shape);
 			virtual void DoSpawn() override;
 			void UpdateCCD();
 			BtEnvironment &GetBtEnv() const;
@@ -102,12 +93,8 @@ export {
 			umath::Transform m_localPoseInv {};
 		};
 
-		class BtRigidBody
-			: public BtCollisionObject,
-			public IRigidBody,
-			public nwm::VelocityCorrection
-		{
-		public:
+		class BtRigidBody : public BtCollisionObject, public IRigidBody, public nwm::VelocityCorrection {
+		  public:
 			friend IEnvironment;
 			btRigidBody &GetInternalObject() const;
 			virtual ~BtRigidBody() override;
@@ -116,16 +103,16 @@ export {
 			virtual Vector3 GetPos() const override;
 			virtual Quat GetRotation() const override;
 			virtual void SetRotation(const Quat &rot) override;
-			virtual void ApplyForce(const Vector3 &force,bool autoWake=true) override;
-			virtual void ApplyForce(const Vector3 &force,const Vector3 &relPos,bool autoWake=true) override;
-			virtual void ApplyImpulse(const Vector3 &impulse,bool autoWake=true) override;
-			virtual void ApplyImpulse(const Vector3 &impulse,const Vector3 &relPos,bool autoWake=true) override;
-			virtual void ApplyTorque(const Vector3 &torque,bool autoWake=true) override;
-			virtual void ApplyTorqueImpulse(const Vector3 &torque,bool autoWake=true) override;
+			virtual void ApplyForce(const Vector3 &force, bool autoWake = true) override;
+			virtual void ApplyForce(const Vector3 &force, const Vector3 &relPos, bool autoWake = true) override;
+			virtual void ApplyImpulse(const Vector3 &impulse, bool autoWake = true) override;
+			virtual void ApplyImpulse(const Vector3 &impulse, const Vector3 &relPos, bool autoWake = true) override;
+			virtual void ApplyTorque(const Vector3 &torque, bool autoWake = true) override;
+			virtual void ApplyTorqueImpulse(const Vector3 &torque, bool autoWake = true) override;
 			virtual void ClearForces() override;
 			virtual Vector3 GetTotalForce() const override;
 			virtual Vector3 GetTotalTorque() const override;
-			virtual void SetMassProps(float mass,const Vector3 &inertia) override;
+			virtual void SetMassProps(float mass, const Vector3 &inertia) override;
 			virtual float GetMass() const override;
 			virtual void SetMass(float mass) override;
 			virtual Vector3 GetInertia() override;
@@ -133,8 +120,8 @@ export {
 			virtual void SetInertia(const Vector3 &inertia) override;
 			virtual Vector3 GetLinearVelocity() const override;
 			virtual Vector3 GetAngularVelocity() const override;
-			virtual void SetLinearVelocity(const Vector3 &vel,bool autoWake=true) override;
-			virtual void SetAngularVelocity(const Vector3 &vel,bool autoWake=true) override;
+			virtual void SetLinearVelocity(const Vector3 &vel, bool autoWake = true) override;
+			virtual void SetAngularVelocity(const Vector3 &vel, bool autoWake = true) override;
 			virtual void SetLinearFactor(const Vector3 &factor) override;
 			virtual void SetAngularFactor(const Vector3 &factor) override;
 			virtual Vector3 GetLinearFactor() const override;
@@ -160,11 +147,10 @@ export {
 
 			virtual void PreSimulate() override;
 			virtual void PostSimulate() override;
-		protected:
-			BtRigidBody(IEnvironment &env,std::unique_ptr<btRigidBody> body,IShape &shape);
-			BtRigidBody(IEnvironment &env,BtShape &shape);
-			struct KinematicData
-			{
+		  protected:
+			BtRigidBody(IEnvironment &env, std::unique_ptr<btRigidBody> body, IShape &shape);
+			BtRigidBody(IEnvironment &env, BtShape &shape);
+			struct KinematicData {
 				Vector3 linearVelocity = {};
 				Vector3 angularVelocity = {};
 			};
@@ -178,11 +164,8 @@ export {
 			virtual void RemoveWorldObject() override;
 		};
 
-		class BtSoftBody
-			: public BtCollisionObject,
-			public ISoftBody
-		{
-		public:
+		class BtSoftBody : public BtCollisionObject, public ISoftBody {
+		  public:
 			friend IEnvironment;
 			btSoftBody &GetInternalObject() const;
 			virtual BtSoftBody *GetBtSoftBody() override;
@@ -195,15 +178,15 @@ export {
 			virtual const std::vector<uint16_t> &GetLocalVertexIndicesToMeshVertexIndices() const override;
 			virtual const std::vector<uint16_t> &GetNodeIndicesToLocalVertexIndices() const override;
 
-			virtual bool MeshVertexIndexToLocalVertexIndex(uint16_t meshVertexIndex,uint16_t &localIndex) const override;
-			virtual bool LocalVertexIndexToMeshVertexIndex(uint16_t localIndex,uint16_t &meshVertexIndex) const override;
-			virtual bool LocalVertexIndexToNodeIndex(uint16_t localVertexIndex,uint16_t &nodeIndex) const override;
-			virtual bool NodeIndexToLocalVertexIndex(uint16_t nodeIndex,uint16_t &localVertexIndex) const override;
+			virtual bool MeshVertexIndexToLocalVertexIndex(uint16_t meshVertexIndex, uint16_t &localIndex) const override;
+			virtual bool LocalVertexIndexToMeshVertexIndex(uint16_t localIndex, uint16_t &meshVertexIndex) const override;
+			virtual bool LocalVertexIndexToNodeIndex(uint16_t localVertexIndex, uint16_t &nodeIndex) const override;
+			virtual bool NodeIndexToLocalVertexIndex(uint16_t nodeIndex, uint16_t &localVertexIndex) const override;
 
-			virtual bool MeshVertexIndexToNodeIndex(uint16_t meshVertexIndex,uint16_t &nodeIndex) const override;
-			virtual bool NodeIndexToMeshVertexIndex(uint16_t nodeIndex,uint16_t &meshVertexIndex) const override;
+			virtual bool MeshVertexIndexToNodeIndex(uint16_t meshVertexIndex, uint16_t &nodeIndex) const override;
+			virtual bool NodeIndexToMeshVertexIndex(uint16_t nodeIndex, uint16_t &meshVertexIndex) const override;
 
-			virtual void SetSubMesh(const ModelSubMesh &subMesh,const std::vector<uint16_t> &meshVertexIndicesToLocalVertexIndices) override;
+			virtual void SetSubMesh(const ModelSubMesh &subMesh, const std::vector<uint16_t> &meshVertexIndicesToLocalVertexIndices) override;
 
 			virtual Vector3 GetPos() const override;
 			virtual void SetPos(const Vector3 &pos) override;
@@ -213,19 +196,19 @@ export {
 
 			virtual void UpdateLinearVelocity() override;
 
-			virtual void AppendAnchor(uint32_t nodeId,IRigidBody &body,const Vector3 &localPivot,bool bDisableCollision=false,float influence=1.f) override;
-			virtual void AppendAnchor(uint32_t nodeId,IRigidBody &body,bool bDisableCollision=false,float influence=1.f) override;
+			virtual void AppendAnchor(uint32_t nodeId, IRigidBody &body, const Vector3 &localPivot, bool bDisableCollision = false, float influence = 1.f) override;
+			virtual void AppendAnchor(uint32_t nodeId, IRigidBody &body, bool bDisableCollision = false, float influence = 1.f) override;
 			virtual uint32_t GetNodeCount() const override;
 
 			virtual const Vector3 &GetLinearVelocity() const override;
 
-			virtual void GetAABB(Vector3 &min,Vector3 &max) const override;
-			virtual void AddAeroForceToNode(int32_t node,const Vector3 &force) override;
-			virtual void AddAeroForceToFace(int32_t face,const Vector3 &force) override;
+			virtual void GetAABB(Vector3 &min, Vector3 &max) const override;
+			virtual void AddAeroForceToNode(int32_t node, const Vector3 &force) override;
+			virtual void AddAeroForceToFace(int32_t face, const Vector3 &force) override;
 			virtual void AddForce(const Vector3 &force) override;
-			virtual void AddForce(uint32_t node,const Vector3 &force) override;
+			virtual void AddForce(uint32_t node, const Vector3 &force) override;
 			virtual void AddLinearVelocity(const Vector3 &vel) override;
-			virtual void AddLinearVelocity(uint32_t node,const Vector3 &vel) override;
+			virtual void AddLinearVelocity(uint32_t node, const Vector3 &vel) override;
 			virtual float GetFriction() const override;
 			virtual float GetHitFraction() const override;
 			virtual float GetRollingFriction() const override;
@@ -239,7 +222,7 @@ export {
 			virtual float GetRestitution() const override;
 			virtual float GetRestLengthScale() const override;
 			virtual Vector3 GetWindVelocity() const override;
-			virtual void SetMass(int32_t node,float mass) override;
+			virtual void SetMass(int32_t node, float mass) override;
 			virtual void SetMass(float mass) override;
 			virtual void SetRestitution(float rest) override;
 			virtual void SetRestLengthScale(float scale) override;
@@ -288,14 +271,14 @@ export {
 			virtual float GetVolumeConversationCoefficient() const override;
 			virtual float GetVelocitiesCorrectionFactor() const override;
 
-			virtual void SetMaterialAngularStiffnessCoefficient(uint32_t matId,float val) override;
-			virtual void SetMaterialLinearStiffnessCoefficient(uint32_t matId,float val) override;
-			virtual void SetMaterialVolumeStiffnessCoefficient(uint32_t matId,float val) override;
+			virtual void SetMaterialAngularStiffnessCoefficient(uint32_t matId, float val) override;
+			virtual void SetMaterialLinearStiffnessCoefficient(uint32_t matId, float val) override;
+			virtual void SetMaterialVolumeStiffnessCoefficient(uint32_t matId, float val) override;
 			virtual float GetMaterialAngularStiffnessCoefficient(uint32_t matId) const override;
 			virtual float GetMaterialLinearStiffnessCoefficient(uint32_t matId) const override;
 			virtual float GetMaterialVolumeStiffnessCoefficient(uint32_t matId) const override;
-		protected:
-			BtSoftBody(IEnvironment &env,std::unique_ptr<btSoftBody> o,IShape &shape,const std::vector<uint16_t> &meshVertIndicesToPhysIndices);
+		  protected:
+			BtSoftBody(IEnvironment &env, std::unique_ptr<btSoftBody> o, IShape &shape, const std::vector<uint16_t> &meshVertIndicesToPhysIndices);
 			virtual void DoAddWorldObject() override;
 
 			Quat m_rotation = uquat::identity();
@@ -310,16 +293,13 @@ export {
 			void UpdateTotalMass();
 		};
 
-		class BtGhostObject
-			: public BtCollisionObject,
-			public IGhostObject
-		{
-		public:
+		class BtGhostObject : public BtCollisionObject, public IGhostObject {
+		  public:
 			friend IEnvironment;
 			btPairCachingGhostObject &GetInternalObject() const;
 			virtual BtGhostObject *GetBtGhostObject() override;
-		protected:
-			BtGhostObject(IEnvironment &env,std::unique_ptr<btPairCachingGhostObject> o,IShape &shape);
+		  protected:
+			BtGhostObject(IEnvironment &env, std::unique_ptr<btPairCachingGhostObject> o, IShape &shape);
 
 			virtual void DoAddWorldObject() override;
 			virtual void RemoveWorldObject() override;

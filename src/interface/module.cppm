@@ -15,17 +15,15 @@ export import :motion_state;
 export import :overlap_filter_callback;
 export import :shape;
 
-extern "C"
+extern "C" {
+PR_EXPORT void initialize_physics_engine(NetworkState &nw, std::unique_ptr<pragma::physics::IEnvironment, void (*)(pragma::physics::IEnvironment *)> &outEnv)
 {
-	PR_EXPORT void initialize_physics_engine(NetworkState &nw,std::unique_ptr<pragma::physics::IEnvironment,void(*)(pragma::physics::IEnvironment*)> &outEnv)
-	{
-		auto env = std::unique_ptr<pragma::physics::IEnvironment,void(*)(pragma::physics::IEnvironment*)>{
-			new pragma::physics::BtEnvironment{nw},[](pragma::physics::IEnvironment *env) {
-			env->OnRemove();
-			delete env;
-		}};
-		if(env->Initialize() == false)
-			env = nullptr;
-		outEnv = std::move(env);
-	}
+	auto env = std::unique_ptr<pragma::physics::IEnvironment, void (*)(pragma::physics::IEnvironment *)> {new pragma::physics::BtEnvironment {nw}, [](pragma::physics::IEnvironment *env) {
+		                                                                                                      env->OnRemove();
+		                                                                                                      delete env;
+	                                                                                                      }};
+	if(env->Initialize() == false)
+		env = nullptr;
+	outEnv = std::move(env);
+}
 };

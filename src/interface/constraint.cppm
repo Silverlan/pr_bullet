@@ -16,8 +16,7 @@ export module pragma.modules.bullet:constraint;
 export import pragma.shared;
 
 export {
-	namespace pragma::physics
-	{
+	namespace pragma::physics {
 		class BtEnvironment;
 		class BtBallSocketConstraint;
 		class BtConeTwistConstraint;
@@ -26,10 +25,8 @@ export {
 		class BtFixedConstraint;
 		class BtHingeConstraint;
 		class BtSliderConstraint;
-		class BtConstraint
-			: virtual public IConstraint
-		{
-		public:
+		class BtConstraint : virtual public IConstraint {
+		  public:
 			friend IEnvironment;
 			btTypedConstraint &GetInternalObject() const;
 			btTypedConstraint &GetBtConstraint() const;
@@ -70,8 +67,8 @@ export {
 			virtual void Initialize() override;
 			virtual pragma::physics::IRigidBody *GetSourceActor() override;
 			virtual pragma::physics::IRigidBody *GetTargetActor() override;
-		protected:
-			BtConstraint(IEnvironment &env,std::unique_ptr<btTypedConstraint> c);
+		  protected:
+			BtConstraint(IEnvironment &env, std::unique_ptr<btTypedConstraint> c);
 			BtEnvironment &GetBtEnv() const;
 			virtual void DoSetCollisionsEnabled(Bool b) override;
 			virtual void RemoveWorldObject() override;
@@ -79,89 +76,71 @@ export {
 			std::unique_ptr<btTypedConstraint> m_constraint = nullptr;
 		};
 
-		class BtFixedConstraint
-			: public IFixedConstraint,
-			public BtConstraint
-		{
-		public:
+		class BtFixedConstraint : public IFixedConstraint, public BtConstraint {
+		  public:
 			friend IEnvironment;
 			btFixedConstraint &GetInternalObject() const;
 			virtual BtFixedConstraint *GetBtFixedConstraint() override;
-		protected:
-			BtFixedConstraint(IEnvironment &env,std::unique_ptr<btFixedConstraint> constraint);
+		  protected:
+			BtFixedConstraint(IEnvironment &env, std::unique_ptr<btFixedConstraint> constraint);
 		};
 
-		class BtBallSocketConstraint
-			: public IBallSocketConstraint,
-			public BtConstraint
-		{
-		public:
+		class BtBallSocketConstraint : public IBallSocketConstraint, public BtConstraint {
+		  public:
 			friend IEnvironment;
 			btPoint2PointConstraint &GetInternalObject() const;
 			virtual BtBallSocketConstraint *GetBtBallSocketConstraint() override;
-		protected:
-			BtBallSocketConstraint(IEnvironment &env,std::unique_ptr<btPoint2PointConstraint> constraint);
+		  protected:
+			BtBallSocketConstraint(IEnvironment &env, std::unique_ptr<btPoint2PointConstraint> constraint);
 		};
 
-		class BtHingeConstraint
-			: public IHingeConstraint,
-			public BtConstraint
-		{
-		public:
+		class BtHingeConstraint : public IHingeConstraint, public BtConstraint {
+		  public:
 			friend IEnvironment;
 			btHingeConstraint &GetInternalObject() const;
 			virtual BtHingeConstraint *GetBtHingeConstraint() override;
-			virtual void SetLimit(umath::Radian lowerLimit,umath::Radian upperLimit) override;
-			virtual std::pair<umath::Radian,umath::Radian> GetLimit() const override;
+			virtual void SetLimit(umath::Radian lowerLimit, umath::Radian upperLimit) override;
+			virtual std::pair<umath::Radian, umath::Radian> GetLimit() const override;
 			virtual void DisableLimit() override;
-		protected:
-			BtHingeConstraint(IEnvironment &env,std::unique_ptr<btHingeConstraint> constraint);
-			void SetLimit(float low,float high,float softness=0.9f,float biasFactor=0.3f,float relaxationFactor=1.f);
+		  protected:
+			BtHingeConstraint(IEnvironment &env, std::unique_ptr<btHingeConstraint> constraint);
+			void SetLimit(float low, float high, float softness = 0.9f, float biasFactor = 0.3f, float relaxationFactor = 1.f);
 		};
 
-		class BtSliderConstraint
-			: public ISliderConstraint,
-			public BtConstraint
-		{
-		public:
+		class BtSliderConstraint : public ISliderConstraint, public BtConstraint {
+		  public:
 			friend IEnvironment;
 			btSliderConstraint &GetInternalObject() const;
 			virtual BtSliderConstraint *GetBtSliderConstraint() override;
-			virtual void SetLimit(float lowerLimit,float upperLimit) override;
+			virtual void SetLimit(float lowerLimit, float upperLimit) override;
 			virtual void DisableLimit() override;
-			virtual std::pair<float,float> GetLimit() const override;
-		protected:
-			BtSliderConstraint(IEnvironment &env,std::unique_ptr<btSliderConstraint> constraint);
+			virtual std::pair<float, float> GetLimit() const override;
+		  protected:
+			BtSliderConstraint(IEnvironment &env, std::unique_ptr<btSliderConstraint> constraint);
 		};
 
-		class BtConeTwistConstraint
-			: public IConeTwistConstraint,
-			public BtConstraint
-		{
-		public:
+		class BtConeTwistConstraint : public IConeTwistConstraint, public BtConstraint {
+		  public:
 			friend IEnvironment;
 			btConeTwistConstraint &GetInternalObject() const;
-			virtual void SetLimit(const Vector3 &lowerLimits,const Vector3 &upperLimits) override;
-			virtual void SetLimit(float swingSpan1,float swingSpan2,float twistSpan) override;
-			virtual void GetLimit(float &outSwingSpan1,float &outSwingSpan2,float &outTwistSpan) override;
+			virtual void SetLimit(const Vector3 &lowerLimits, const Vector3 &upperLimits) override;
+			virtual void SetLimit(float swingSpan1, float swingSpan2, float twistSpan) override;
+			virtual void GetLimit(float &outSwingSpan1, float &outSwingSpan2, float &outTwistSpan) override;
 			virtual BtConeTwistConstraint *GetBtConeTwistConstraint() override;
-		protected:
-			BtConeTwistConstraint(IEnvironment &env,std::unique_ptr<btConeTwistConstraint> constraint);
+		  protected:
+			BtConeTwistConstraint(IEnvironment &env, std::unique_ptr<btConeTwistConstraint> constraint);
 		};
 
-		class BtDoFConstraint
-			: public IDoFConstraint,
-			public BtConstraint
-		{
-		public:
+		class BtDoFConstraint : public IDoFConstraint, public BtConstraint {
+		  public:
 			friend IEnvironment;
 			btGeneric6DofConstraint &GetInternalObject() const;
 			virtual BtDoFConstraint *GetBtDoFConstraint() override;
-			virtual void SetLinearLimit(const Vector3 &lower,const Vector3 &upper) override;
+			virtual void SetLinearLimit(const Vector3 &lower, const Vector3 &upper) override;
 			virtual void SetLinearLimit(const Vector3 &lim) override;
 			virtual void SetLinearLowerLimit(const Vector3 &lim) override;
 			virtual void SetLinearUpperLimit(const Vector3 &lim) override;
-			virtual void SetAngularLimit(const EulerAngles &lower,const EulerAngles &upper) override;
+			virtual void SetAngularLimit(const EulerAngles &lower, const EulerAngles &upper) override;
 			virtual void SetAngularLimit(const EulerAngles &lim) override;
 			virtual void SetAngularLowerLimit(const EulerAngles &lim) override;
 			virtual void SetAngularUpperLimit(const EulerAngles &lim) override;
@@ -190,7 +169,7 @@ export {
 			virtual Vector3 GetAngularRestitutionFactor() const override;
 			virtual void SetAngularRestitutionFactor(const Vector3 &factor) override;
 			virtual bool IsAngularMotorEnabled(uint8_t axis) const override;
-			virtual void SetAngularMotorEnabled(uint8_t axis,bool bEnabled) override;
+			virtual void SetAngularMotorEnabled(uint8_t axis, bool bEnabled) override;
 			virtual Vector3 GetCurrentAngularLimitError() const override;
 			virtual Vector3 GetCurrentAngularPosition() const override;
 			virtual Vector3i GetCurrentAngularLimit() const override;
@@ -213,26 +192,23 @@ export {
 			virtual float GetLinearRestitutionFactor() const override;
 			virtual void SetLinearRestitutionFactor(float factor) override;
 			virtual bool IsLinearMotorEnabled(uint8_t axis) const override;
-			virtual void SetLinearMotorEnabled(uint8_t axis,bool bEnabled) override;
+			virtual void SetLinearMotorEnabled(uint8_t axis, bool bEnabled) override;
 			virtual Vector3 GetCurrentLinearDifference() const override;
 			virtual Vector3 GetCurrentLinearLimitError() const override;
 			virtual Vector3i GetCurrentLinearLimit() const override;
 			virtual Vector3 GetCurrentLinearAccumulatedImpulse() const override;
-		protected:
-			BtDoFConstraint(IEnvironment &env,std::unique_ptr<btGeneric6DofConstraint> constraint);
+		  protected:
+			BtDoFConstraint(IEnvironment &env, std::unique_ptr<btGeneric6DofConstraint> constraint);
 		};
 
-		class BtDoFSpringConstraint
-			: public IDoFSpringConstraint,
-			public BtConstraint
-		{
-		public:
+		class BtDoFSpringConstraint : public IDoFSpringConstraint, public BtConstraint {
+		  public:
 			friend IEnvironment;
 			btGeneric6DofSpring2Constraint &GetInternalObject() const;
 			virtual BtDoFSpringConstraint *GetBtDoFSpringConstraint() override;
 
 			virtual void CalculateTransforms() override;
-			virtual void CalculateTransforms(const umath::Transform &frameA,const umath::Transform &frameB) override;
+			virtual void CalculateTransforms(const umath::Transform &frameA, const umath::Transform &frameB) override;
 			btRotationalLimitMotor2 *GetRotationalLimitMotor(pragma::Axis index) const;
 			btTranslationalLimitMotor2 *GetTranslationalLimitMotor() const;
 			virtual umath::Transform GetCalculatedTransformA() const override;
@@ -242,7 +218,7 @@ export {
 			virtual Vector3 GetAxis(pragma::Axis axisIndex) const override;
 			virtual double GetAngle(pragma::Axis axisIndex) const override;
 			virtual double GetRelativePivotPosition(pragma::Axis axisIndex) const override;
-			virtual void SetFrames(const umath::Transform &frameA,const umath::Transform &frameB) override;
+			virtual void SetFrames(const umath::Transform &frameA, const umath::Transform &frameB) override;
 			virtual void SetLinearLowerLimit(const Vector3 &linearLower) override;
 			virtual Vector3 GetLinearLowerLimit() const override;
 			virtual void SetLinearUpperLimit(const Vector3 &linearUpper) override;
@@ -255,42 +231,42 @@ export {
 			virtual void SetAngularUpperLimitReversed(const Vector3 &angularUpper) override;
 			virtual Vector3 GetAngularUpperLimit() const override;
 			virtual Vector3 GetAngularUpperLimitReversed() const override;
-			virtual void SetLimit(AxisType type,pragma::Axis axis,double lo,double hi) override;
-			virtual void SetLimitReversed(AxisType type,pragma::Axis axis,double lo,double hi) override;
-			virtual bool IsLimited(AxisType type,pragma::Axis axis) const override;
+			virtual void SetLimit(AxisType type, pragma::Axis axis, double lo, double hi) override;
+			virtual void SetLimitReversed(AxisType type, pragma::Axis axis, double lo, double hi) override;
+			virtual bool IsLimited(AxisType type, pragma::Axis axis) const override;
 			virtual void SetRotationOrder(pragma::RotationOrder order) override;
 			virtual pragma::RotationOrder GetRotationOrder() const override;
-			virtual void SetAxis(const Vector3 &axis1,const Vector3 &axis2) override;
-			virtual void SetBounce(AxisType type,pragma::Axis axis,double bounce) override;
-			virtual void EnableMotor(AxisType type,pragma::Axis axis,bool onOff) override;
-			virtual void SetServo(AxisType type,pragma::Axis axis,bool onOff) override;
-			virtual void SetTargetVelocity(AxisType type,pragma::Axis axis,double velocity) override;
-			virtual void SetServoTarget(AxisType type,pragma::Axis axis,double target) override;
-			virtual void SetMaxMotorForce(AxisType type,pragma::Axis axis,double force) override;
-			virtual void EnableSpring(AxisType type,pragma::Axis axis,bool onOff) override;
-			virtual void SetStiffness(AxisType type,pragma::Axis axis,double stiffness,bool limitIfNeeded=true) override;
-			virtual void SetDamping(AxisType type,pragma::Axis axis,double damping,bool limitIfNeeded=true) override;
+			virtual void SetAxis(const Vector3 &axis1, const Vector3 &axis2) override;
+			virtual void SetBounce(AxisType type, pragma::Axis axis, double bounce) override;
+			virtual void EnableMotor(AxisType type, pragma::Axis axis, bool onOff) override;
+			virtual void SetServo(AxisType type, pragma::Axis axis, bool onOff) override;
+			virtual void SetTargetVelocity(AxisType type, pragma::Axis axis, double velocity) override;
+			virtual void SetServoTarget(AxisType type, pragma::Axis axis, double target) override;
+			virtual void SetMaxMotorForce(AxisType type, pragma::Axis axis, double force) override;
+			virtual void EnableSpring(AxisType type, pragma::Axis axis, bool onOff) override;
+			virtual void SetStiffness(AxisType type, pragma::Axis axis, double stiffness, bool limitIfNeeded = true) override;
+			virtual void SetDamping(AxisType type, pragma::Axis axis, double damping, bool limitIfNeeded = true) override;
 			virtual void SetEquilibriumPoint() override;
-			virtual void SetEquilibriumPoint(AxisType type,pragma::Axis axis) override;
-			virtual void SetEquilibriumPoint(AxisType type,pragma::Axis axis,double val) override;
+			virtual void SetEquilibriumPoint(AxisType type, pragma::Axis axis) override;
+			virtual void SetEquilibriumPoint(AxisType type, pragma::Axis axis, double val) override;
 
-			virtual void SetERP(AxisType type,pragma::Axis axis,double value) override;
-			virtual double GetERP(AxisType type,pragma::Axis axis) const override;
-			virtual void SetStopERP(AxisType type,pragma::Axis axis,double value) override;
-			virtual double GetStopERP(AxisType type,pragma::Axis axis) const override;
-			virtual void SetCFM(AxisType type,pragma::Axis axis,double value) override;
-			virtual double GetCFM(AxisType type,pragma::Axis axis) const override;
-			virtual void SetStopCFM(AxisType type,pragma::Axis axis,double value) override;
-			virtual double GetStopCFM(AxisType type,pragma::Axis axis) const override;
+			virtual void SetERP(AxisType type, pragma::Axis axis, double value) override;
+			virtual double GetERP(AxisType type, pragma::Axis axis) const override;
+			virtual void SetStopERP(AxisType type, pragma::Axis axis, double value) override;
+			virtual double GetStopERP(AxisType type, pragma::Axis axis) const override;
+			virtual void SetCFM(AxisType type, pragma::Axis axis, double value) override;
+			virtual double GetCFM(AxisType type, pragma::Axis axis) const override;
+			virtual void SetStopCFM(AxisType type, pragma::Axis axis, double value) override;
+			virtual double GetStopCFM(AxisType type, pragma::Axis axis) const override;
 
-			bool MatrixToEulerXYZ(const btMatrix3x3& mat,btVector3& xyz) const;
-			bool MatrixToEulerXZY(const btMatrix3x3& mat,btVector3& xyz) const;
-			bool MatrixToEulerYXZ(const btMatrix3x3& mat,btVector3& xyz) const;
-			bool MatrixToEulerYZX(const btMatrix3x3& mat,btVector3& xyz) const;
-			bool MatrixToEulerZXY(const btMatrix3x3& mat,btVector3& xyz) const;
-			bool MatrixToEulerZYX(const btMatrix3x3& mat,btVector3& xyz) const;
-		protected:
-			BtDoFSpringConstraint(IEnvironment &env,std::unique_ptr<btGeneric6DofSpring2Constraint> constraint);
+			bool MatrixToEulerXYZ(const btMatrix3x3 &mat, btVector3 &xyz) const;
+			bool MatrixToEulerXZY(const btMatrix3x3 &mat, btVector3 &xyz) const;
+			bool MatrixToEulerYXZ(const btMatrix3x3 &mat, btVector3 &xyz) const;
+			bool MatrixToEulerYZX(const btMatrix3x3 &mat, btVector3 &xyz) const;
+			bool MatrixToEulerZXY(const btMatrix3x3 &mat, btVector3 &xyz) const;
+			bool MatrixToEulerZYX(const btMatrix3x3 &mat, btVector3 &xyz) const;
+		  protected:
+			BtDoFSpringConstraint(IEnvironment &env, std::unique_ptr<btGeneric6DofSpring2Constraint> constraint);
 		};
 	};
 }

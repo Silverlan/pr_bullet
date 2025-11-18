@@ -8,8 +8,6 @@ module;
 
 export module pragma.modules.bullet:overlap_filter_callback;
 
-export class PhysOverlapFilterCallback
-	: public btOverlapFilterCallback
-{
-	virtual bool needBroadphaseCollision(btBroadphaseProxy* proxy0,btBroadphaseProxy* proxy1) const override;
+export class PhysOverlapFilterCallback : public btOverlapFilterCallback {
+	virtual bool needBroadphaseCollision(btBroadphaseProxy *proxy0, btBroadphaseProxy *proxy1) const override;
 };
