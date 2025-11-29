@@ -3,6 +3,8 @@
 
 module;
 
+#include "util_enum_flags.hpp"
+
 #include <BulletSoftBody/btSoftBody.h>
 #include <BulletCollision/CollisionDispatch/btGhostObject.h>
 
@@ -306,8 +308,5 @@ export {
 		};
 		using namespace umath::scoped_enum::bitwise;
 	};
-	namespace umath::scoped_enum::bitwise {
-		template<>
-		struct enable_bitwise_operators<pragma::physics::BtCollisionObject::BtStateFlags> : std::true_type {};
-	}
+	REGISTER_ENUM_FLAGS(pragma::physics::BtCollisionObject::BtStateFlags)
 };
