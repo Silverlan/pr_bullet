@@ -95,7 +95,7 @@ export {
 			umath::Transform m_localPoseInv {};
 		};
 
-		class BtRigidBody : public BtCollisionObject, public IRigidBody, public nwm::VelocityCorrection {
+		class BtRigidBody : public BtCollisionObject, public IRigidBody, public networking::VelocityCorrection {
 		  public:
 			friend IEnvironment;
 			btRigidBody &GetInternalObject() const;
@@ -188,7 +188,7 @@ export {
 			virtual bool MeshVertexIndexToNodeIndex(uint16_t meshVertexIndex, uint16_t &nodeIndex) const override;
 			virtual bool NodeIndexToMeshVertexIndex(uint16_t nodeIndex, uint16_t &meshVertexIndex) const override;
 
-			virtual void SetSubMesh(const ModelSubMesh &subMesh, const std::vector<uint16_t> &meshVertexIndicesToLocalVertexIndices) override;
+			virtual void SetSubMesh(const geometry::ModelSubMesh &subMesh, const std::vector<uint16_t> &meshVertexIndicesToLocalVertexIndices) override;
 
 			virtual Vector3 GetPos() const override;
 			virtual void SetPos(const Vector3 &pos) override;

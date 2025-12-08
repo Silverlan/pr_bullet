@@ -949,9 +949,9 @@ bool pragma::physics::BtSoftBody::NodeIndexToMeshVertexIndex(uint16_t nodeIndex,
 		return false;
 	return LocalVertexIndexToMeshVertexIndex(localIndex, meshVertexIndex);
 }
-void pragma::physics::BtSoftBody::SetSubMesh(const ModelSubMesh &subMesh, const std::vector<uint16_t> &meshVertexIndicesToLocalVertexIndices)
+void pragma::physics::BtSoftBody::SetSubMesh(const geometry::ModelSubMesh &subMesh, const std::vector<uint16_t> &meshVertexIndicesToLocalVertexIndices)
 {
-	m_subMesh = const_cast<ModelSubMesh &>(subMesh).shared_from_this();
+	m_subMesh = const_cast<geometry::ModelSubMesh &>(subMesh).shared_from_this();
 	m_meshVertexIndicesToLocalVertexIndices = meshVertexIndicesToLocalVertexIndices;
 
 	m_localVertexIndicesToMeshVertexIndices.clear();

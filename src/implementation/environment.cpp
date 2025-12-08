@@ -115,7 +115,7 @@ class PhysBulletWorld : public pragma::physics::btWorldType {
 
 extern void btInitCustomMaterialCombinerCallback();
 static void initContactCallbacks();
-pragma::physics::BtEnvironment::BtEnvironment(NetworkState &state) : pragma::physics::IEnvironment {state}
+pragma::physics::BtEnvironment::BtEnvironment(pragma::NetworkState &state) : pragma::physics::IEnvironment {state}
 {
 	btInitCustomMaterialCombinerCallback();
 	initContactCallbacks();
@@ -586,7 +586,7 @@ struct Vector3d {
 	double z = 0.f;
 };
 #pragma pack(pop)
-static std::unique_ptr<btSoftBody> createSoftBody(const PhysSoftBodyInfo &sbInfo, btSoftRigidDynamicsWorld *world, btSoftBodyWorldInfo *info, float mass, std::vector<Vector3d> &verts, std::vector<int32_t> indices)
+static std::unique_ptr<btSoftBody> createSoftBody(const pragma::physics::PhysSoftBodyInfo &sbInfo, btSoftRigidDynamicsWorld *world, btSoftBodyWorldInfo *info, float mass, std::vector<Vector3d> &verts, std::vector<int32_t> indices)
 {
 	if(mass == 0.f) {
 		Con::cwar << "Attempted to create soft-body object with mass of 0! Using mass of 1 instead..." << Con::endl;
@@ -924,7 +924,7 @@ namespace pragma::physics {
 	};
 };
 
-Bool pragma::physics::BtEnvironment::RayCast(const TraceData &data, std::vector<TraceResult> *results) const
+Bool pragma::physics::BtEnvironment::RayCast(const pragma::physics::TraceData &data, std::vector<TraceResult> *results) const
 {
 	auto origin = data.GetSourceOrigin();
 	auto btOrigin = uvec::create_bt(origin) * WORLD_SCALE;
@@ -1013,7 +1013,7 @@ Bool pragma::physics::BtEnvironment::RayCast(const TraceData &data, std::vector<
 	return false;
 }
 
-Bool pragma::physics::BtEnvironment::Overlap(const TraceData &data, std::vector<TraceResult> *results) const
+Bool pragma::physics::BtEnvironment::Overlap(const pragma::physics::TraceData &data, std::vector<TraceResult> *results) const
 {
 #if 0
 	auto *shape = data.GetShape();
@@ -1071,7 +1071,7 @@ Bool pragma::physics::BtEnvironment::Overlap(const TraceData &data, std::vector<
 #endif
 	return false;
 }
-Bool pragma::physics::BtEnvironment::Sweep(const TraceData &data, std::vector<TraceResult> *results) const
+Bool pragma::physics::BtEnvironment::Sweep(const pragma::physics::TraceData &data, std::vector<TraceResult> *results) const
 {
 #if 0
 	std::vector<btConvexShape*> shapes;
@@ -1215,7 +1215,7 @@ static void update_physics_contact_controller_info(pragma::Game *game, int idx, 
 		if(bValidCandidate == false)
 			continue;
 		// This will only be applied if the contact point is a better candidate than the controller's previous candidate (for this tick)!
-		auto *controller = static_cast<ControllerPhysObj *>(phys)->GetController();
+		auto *controller = static_cast<pragma::physics::ControllerPhysObj *>(phys)->GetController();
 		if(controller)
 			dynamic_cast<pragma::physics::BtController *>(controller)->SetGroundContactPoint(contactPoint, idx, (idx == 1) ? oOther : o, (idx == 0) ? oOther : o);
 	}

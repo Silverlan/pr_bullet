@@ -52,7 +52,7 @@ export namespace pragma::physics {
 		static btScalar ToBtDistance(double d);
 		static Color ToPragmaColor(const btVector3 &col);
 
-		BtEnvironment(NetworkState &state);
+		BtEnvironment(pragma::NetworkState &state);
 		virtual ~BtEnvironment() override;
 
 		BtRigidBody &ToBtType(IRigidBody &body);
@@ -92,9 +92,9 @@ export namespace pragma::physics {
 
 		virtual RemainingDeltaTime DoStepSimulation(float timeStep, int maxSubSteps = 1, float fixedTimeStep = (1.f / 60.f)) override;
 
-		virtual Bool Overlap(const TraceData &data, std::vector<TraceResult> *results = nullptr) const override;
-		virtual Bool RayCast(const TraceData &data, std::vector<TraceResult> *results = nullptr) const override;
-		virtual Bool Sweep(const TraceData &data, std::vector<TraceResult> *results = nullptr) const override;
+		virtual Bool Overlap(const pragma::physics::TraceData &data, std::vector<TraceResult> *results = nullptr) const override;
+		virtual Bool RayCast(const pragma::physics::TraceData &data, std::vector<TraceResult> *results = nullptr) const override;
+		virtual Bool Sweep(const pragma::physics::TraceData &data, std::vector<TraceResult> *results = nullptr) const override;
 
 		virtual void RemoveConstraint(IConstraint &constraint) override;
 		virtual void RemoveCollisionObject(ICollisionObject &obj) override;
