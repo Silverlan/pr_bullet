@@ -99,8 +99,8 @@ export {
 			friend IEnvironment;
 			btHingeConstraint &GetInternalObject() const;
 			virtual BtHingeConstraint *GetBtHingeConstraint() override;
-			virtual void SetLimit(umath::Radian lowerLimit, umath::Radian upperLimit) override;
-			virtual std::pair<umath::Radian, umath::Radian> GetLimit() const override;
+			virtual void SetLimit(pragma::math::Radian lowerLimit, pragma::math::Radian upperLimit) override;
+			virtual std::pair<pragma::math::Radian, pragma::math::Radian> GetLimit() const override;
 			virtual void DisableLimit() override;
 		  protected:
 			BtHingeConstraint(IEnvironment &env, std::unique_ptr<btHingeConstraint> constraint);
@@ -208,17 +208,17 @@ export {
 			virtual BtDoFSpringConstraint *GetBtDoFSpringConstraint() override;
 
 			virtual void CalculateTransforms() override;
-			virtual void CalculateTransforms(const umath::Transform &frameA, const umath::Transform &frameB) override;
+			virtual void CalculateTransforms(const pragma::math::Transform &frameA, const pragma::math::Transform &frameB) override;
 			btRotationalLimitMotor2 *GetRotationalLimitMotor(pragma::Axis index) const;
 			btTranslationalLimitMotor2 *GetTranslationalLimitMotor() const;
-			virtual umath::Transform GetCalculatedTransformA() const override;
-			virtual umath::Transform GetCalculatedTransformB() const override;
-			virtual umath::Transform GetFrameOffsetA() const override;
-			virtual umath::Transform GetFrameOffsetB() const override;
+			virtual pragma::math::Transform GetCalculatedTransformA() const override;
+			virtual pragma::math::Transform GetCalculatedTransformB() const override;
+			virtual pragma::math::Transform GetFrameOffsetA() const override;
+			virtual pragma::math::Transform GetFrameOffsetB() const override;
 			virtual Vector3 GetAxis(pragma::Axis axisIndex) const override;
 			virtual double GetAngle(pragma::Axis axisIndex) const override;
 			virtual double GetRelativePivotPosition(pragma::Axis axisIndex) const override;
-			virtual void SetFrames(const umath::Transform &frameA, const umath::Transform &frameB) override;
+			virtual void SetFrames(const pragma::math::Transform &frameA, const pragma::math::Transform &frameB) override;
 			virtual void SetLinearLowerLimit(const Vector3 &linearLower) override;
 			virtual Vector3 GetLinearLowerLimit() const override;
 			virtual void SetLinearUpperLimit(const Vector3 &linearUpper) override;

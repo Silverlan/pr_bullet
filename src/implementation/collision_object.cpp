@@ -22,7 +22,7 @@ pragma::physics::BtCollisionObject::BtCollisionObject(IEnvironment &env, std::un
 	ApplyCollisionShape(&shape);
 }
 
-void pragma::physics::BtCollisionObject::InitializeLuaHandle(const util::TWeakSharedHandle<IBase> &handle)
+void pragma::physics::BtCollisionObject::InitializeLuaHandle(const pragma::util::TWeakSharedHandle<IBase> &handle)
 {
 	ICollisionObject::InitializeLuaHandle(handle);
 	UpdateCCD();
@@ -43,13 +43,13 @@ void pragma::physics::BtCollisionObject::UpdateAwakeStates(uint64_t tick)
 }
 void pragma::physics::BtCollisionObject::SetAwake(bool awake, bool removeFromGlobalAwakeList)
 {
-	if(umath::is_flag_set(m_btStateFlags, BtStateFlags::WorldObjectRemoved))
+	if(pragma::math::is_flag_set(m_btStateFlags, BtStateFlags::WorldObjectRemoved))
 		return;
 	if(awake) {
 		m_lastTickAwake = GetBtEnv().GetCurrentSimulationStepIndex();
-		if(umath::is_flag_set(m_btStateFlags, BtStateFlags::Awake))
+		if(pragma::math::is_flag_set(m_btStateFlags, BtStateFlags::Awake))
 			return;
-		umath::set_flag(m_btStateFlags, BtStateFlags::Awake);
+		pragma::math::set_flag(m_btStateFlags, BtStateFlags::Awake);
 		auto hThis = GetHandle();
 		GetBtEnv().PushEvent([hThis, this]() {
 			if(!hThis.IsValid())
@@ -58,9 +58,9 @@ void pragma::physics::BtCollisionObject::SetAwake(bool awake, bool removeFromGlo
 		});
 		return;
 	}
-	if(!umath::is_flag_set(m_btStateFlags, BtStateFlags::Awake))
+	if(!pragma::math::is_flag_set(m_btStateFlags, BtStateFlags::Awake))
 		return;
-	umath::set_flag(m_btStateFlags, BtStateFlags::Awake, false);
+	pragma::math::set_flag(m_btStateFlags, BtStateFlags::Awake, false);
 	if(removeFromGlobalAwakeList) {
 		auto it = g_awakeColObjects.find(this);
 		if(it != g_awakeColObjects.end())
@@ -93,8 +93,8 @@ void pragma::physics::BtCollisionObject::DoSpawn()
 	auto *broadphase = m_collisionObject->getBroadphaseHandle();
 	if(broadphase == nullptr)
 		return;
-	broadphase->m_collisionFilterMask = static_cast<int16_t>(umath::to_integral(m_collisionFilterMask));
-	broadphase->m_collisionFilterGroup = static_cast<int16_t>(umath::to_integral(m_collisionFilterGroup));
+	broadphase->m_collisionFilterMask = static_cast<int16_t>(pragma::math::to_integral(m_collisionFilterMask));
+	broadphase->m_collisionFilterGroup = static_cast<int16_t>(pragma::math::to_integral(m_collisionFilterGroup));
 	UpdateCCD();
 }
 
@@ -129,14 +129,14 @@ void pragma::physics::BtCollisionObject::SetCollisionsEnabled(bool enabled)
 
 void pragma::physics::BtCollisionObject::SetCCDEnabled(bool b)
 {
-	umath::set_flag(m_btStateFlags, BtStateFlags::CcdEnabled, b);
+	pragma::math::set_flag(m_btStateFlags, BtStateFlags::CcdEnabled, b);
 	UpdateCCD();
 }
 
 void pragma::physics::BtCollisionObject::UpdateCCD()
 {
 	// Dirty hack: CCD does not work with custom collision rules, so disable it if there are any
-	if(umath::is_flag_set(m_btStateFlags, BtStateFlags::CcdEnabled) == false || m_collisionFilterGroup != CollisionMask::Default || m_collisionFilterMask != CollisionMask::Default) {
+	if(pragma::math::is_flag_set(m_btStateFlags, BtStateFlags::CcdEnabled) == false || m_collisionFilterGroup != CollisionMask::Default || m_collisionFilterMask != CollisionMask::Default) {
 		m_collisionObject->setCcdMotionThreshold(0.0);
 		m_collisionObject->setCcdSweptSphereRadius(0.0);
 	}
@@ -162,12 +162,12 @@ void pragma::physics::BtCollisionObject::GetAABB(Vector3 &min, Vector3 &max) con
 	return (state == DISABLE_SIMULATION || state == ISLAND_SLEEPING) ? true : false;
 }*/
 
-umath::Transform pragma::physics::BtCollisionObject::GetBaseTransform() { return BtEnvironment::CreateTransform(m_collisionObject->getWorldTransform()); }
-void pragma::physics::BtCollisionObject::SetBaseTransform(const umath::Transform &t) { m_collisionObject->setWorldTransform(BtEnvironment::CreateBtTransform(t)); }
+pragma::math::Transform pragma::physics::BtCollisionObject::GetBaseTransform() { return BtEnvironment::CreateTransform(m_collisionObject->getWorldTransform()); }
+void pragma::physics::BtCollisionObject::SetBaseTransform(const pragma::math::Transform &t) { m_collisionObject->setWorldTransform(BtEnvironment::CreateBtTransform(t)); }
 
-umath::Transform pragma::physics::BtCollisionObject::GetWorldTransform() { return BtEnvironment::CreateTransform(m_collisionObject->getWorldTransform()) * m_localPoseInv; }
+pragma::math::Transform pragma::physics::BtCollisionObject::GetWorldTransform() { return BtEnvironment::CreateTransform(m_collisionObject->getWorldTransform()) * m_localPoseInv; }
 
-void pragma::physics::BtCollisionObject::SetWorldTransform(const umath::Transform &t) { m_collisionObject->setWorldTransform(BtEnvironment::CreateBtTransform(t * m_localPose)); }
+void pragma::physics::BtCollisionObject::SetWorldTransform(const pragma::math::Transform &t) { m_collisionObject->setWorldTransform(BtEnvironment::CreateBtTransform(t * m_localPose)); }
 
 Vector3 pragma::physics::BtCollisionObject::GetPos() const { return const_cast<BtCollisionObject *>(this)->GetWorldTransform().GetOrigin(); }
 void pragma::physics::BtCollisionObject::SetPos(const Vector3 &pos)
@@ -214,7 +214,7 @@ void pragma::physics::BtCollisionObject::DoSetCollisionFilterGroup(CollisionMask
 	auto *broadphase = m_collisionObject->getBroadphaseHandle();
 	if(broadphase == nullptr)
 		return;
-	broadphase->m_collisionFilterGroup = static_cast<int16_t>(umath::to_integral(group));
+	broadphase->m_collisionFilterGroup = static_cast<int16_t>(pragma::math::to_integral(group));
 }
 
 void pragma::physics::BtCollisionObject::DoSetCollisionFilterMask(CollisionMask mask)
@@ -222,7 +222,7 @@ void pragma::physics::BtCollisionObject::DoSetCollisionFilterMask(CollisionMask 
 	auto *broadphase = m_collisionObject->getBroadphaseHandle();
 	if(broadphase == nullptr)
 		return;
-	broadphase->m_collisionFilterMask = static_cast<int16_t>(umath::to_integral(mask));
+	broadphase->m_collisionFilterMask = static_cast<int16_t>(pragma::math::to_integral(mask));
 }
 
 void pragma::physics::BtCollisionObject::WakeUp(bool forceActivation) { m_collisionObject->activate(forceActivation); }
@@ -247,7 +247,7 @@ pragma::physics::BtCollisionObject::ActivationState pragma::physics::BtCollision
 		state = ActivationState::WaitForDeactivation;
 		break;
 	}
-	static_assert(umath::to_integral(ActivationState::Count) == 5);
+	static_assert(pragma::math::to_integral(ActivationState::Count) == 5);
 	return state;
 }
 void pragma::physics::BtCollisionObject::SetActivationState(ActivationState state)
@@ -270,7 +270,7 @@ void pragma::physics::BtCollisionObject::SetActivationState(ActivationState stat
 		btState = WANTS_DEACTIVATION;
 		break;
 	}
-	static_assert(umath::to_integral(ActivationState::Count) == 5);
+	static_assert(pragma::math::to_integral(ActivationState::Count) == 5);
 	m_collisionObject->forceActivationState(btState);
 }
 
@@ -279,11 +279,11 @@ void pragma::physics::BtCollisionObject::SetContactProcessingThreshold(float thr
 pragma::physics::BtEnvironment &pragma::physics::BtCollisionObject::GetBtEnv() const { return static_cast<BtEnvironment &>(m_physEnv); }
 btCollisionObject &pragma::physics::BtCollisionObject::GetInternalObject() const { return *m_collisionObject; }
 
-void pragma::physics::BtCollisionObject::OnAddWorldObject() { umath::set_flag(m_btStateFlags, BtStateFlags::WorldObjectRemoved, false); }
+void pragma::physics::BtCollisionObject::OnAddWorldObject() { pragma::math::set_flag(m_btStateFlags, BtStateFlags::WorldObjectRemoved, false); }
 void pragma::physics::BtCollisionObject::OnRemoveWorldObject()
 {
 	SetAwake(false);
-	umath::set_flag(m_btStateFlags, BtStateFlags::WorldObjectRemoved);
+	pragma::math::set_flag(m_btStateFlags, BtStateFlags::WorldObjectRemoved);
 }
 
 void pragma::physics::BtCollisionObject::RemoveWorldObject()
@@ -310,7 +310,7 @@ bool pragma::physics::BtCollisionObject::IsTrigger() const
 	return (flags & btCollisionObject::CF_NO_CONTACT_RESPONSE) != 0 ? true : false;
 }
 
-void pragma::physics::BtCollisionObject::TransformLocalPose(const umath::Transform &t) { m_localPose = t * m_localPose; }
+void pragma::physics::BtCollisionObject::TransformLocalPose(const pragma::math::Transform &t) { m_localPose = t * m_localPose; }
 
 void pragma::physics::BtCollisionObject::SetSleepReportEnabled(bool reportEnabled)
 {
@@ -397,7 +397,7 @@ void pragma::physics::BtRigidBody::DoAddWorldObject()
 	RemoveWorldObject();
 	OnAddWorldObject();
 	auto *world = GetBtEnv().GetWorld();
-	world->addRigidBody(&GetInternalObject(), umath::to_integral(m_collisionFilterGroup), umath::to_integral(m_collisionFilterMask));
+	world->addRigidBody(&GetInternalObject(), pragma::math::to_integral(m_collisionFilterGroup), pragma::math::to_integral(m_collisionFilterMask));
 }
 
 void pragma::physics::BtRigidBody::RemoveWorldObject()
@@ -649,7 +649,7 @@ void pragma::physics::BtRigidBody::PreSimulate()
 		auto &transform = static_cast<KinematicMotionState *>(m_motionState.get())->GetWorldTransform();
 		transform.SetOrigin(transform.GetOrigin() + GetLinearVelocity() * static_cast<float>(dt));
 		auto angVel = GetAngularVelocity() * static_cast<float>(dt);
-		EulerAngles ang {static_cast<float>(umath::rad_to_deg(angVel.x)), static_cast<float>(umath::rad_to_deg(angVel.y)), static_cast<float>(umath::rad_to_deg(angVel.z))};
+		EulerAngles ang {static_cast<float>(pragma::math::rad_to_deg(angVel.x)), static_cast<float>(pragma::math::rad_to_deg(angVel.y)), static_cast<float>(pragma::math::rad_to_deg(angVel.z))};
 		transform.SetRotation(transform.GetRotation() * uquat::create(ang));
 		auto &body = GetInternalObject();
 		body.setLinearVelocity(BtEnvironment::ToBtPosition(GetLinearVelocity()));
@@ -711,7 +711,7 @@ void pragma::physics::BtSoftBody::DoAddWorldObject()
 #if PHYS_WORLD_TYPE == PHYS_WORLD_SOFT_RIGID_DYNAMICS
 	OnAddWorldObject();
 	auto *world = GetBtEnv().GetWorld();
-	world->addSoftBody(&GetInternalObject(), umath::to_integral(m_collisionFilterGroup), umath::to_integral(m_collisionFilterMask));
+	world->addSoftBody(&GetInternalObject(), pragma::math::to_integral(m_collisionFilterGroup), pragma::math::to_integral(m_collisionFilterMask));
 #endif
 }
 pragma::physics::BtSoftBody *pragma::physics::BtSoftBody::GetBtSoftBody() { return this; }
@@ -895,7 +895,7 @@ void pragma::physics::BtSoftBody::SetRotation(const Quat &rot)
 
 Quat pragma::physics::BtSoftBody::GetRotation() const { return m_rotation; }
 
-void pragma::physics::BtSoftBody::SetWorldTransform(const umath::Transform &t)
+void pragma::physics::BtSoftBody::SetWorldTransform(const pragma::math::Transform &t)
 {
 	auto bt = BtEnvironment::CreateBtTransform(t);
 	GetInternalObject().transform(GetInternalObject().getWorldTransform().inverse() * bt);
@@ -983,7 +983,7 @@ void pragma::physics::BtGhostObject::DoAddWorldObject()
 	RemoveWorldObject();
 	OnAddWorldObject();
 	auto *world = GetBtEnv().GetWorld();
-	world->addCollisionObject(m_collisionObject.get(), umath::to_integral(m_collisionFilterGroup), umath::to_integral(m_collisionFilterMask)); //,btBroadphaseProxy::CharacterFilter,btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
+	world->addCollisionObject(m_collisionObject.get(), pragma::math::to_integral(m_collisionFilterGroup), pragma::math::to_integral(m_collisionFilterMask)); //,btBroadphaseProxy::CharacterFilter,btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
 }
 
 void pragma::physics::BtGhostObject::RemoveWorldObject()

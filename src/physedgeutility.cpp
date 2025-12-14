@@ -463,7 +463,7 @@ void _btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectW
 	//btAssert(colObj0->getCollisionShape()->getShapeType() == TRIANGLE_SHAPE_PROXYTYPE);
 	if(colObj0Wrap->getCollisionShape()->getShapeType() != TRIANGLE_SHAPE_PROXYTYPE)
 	{
-		//if(umath::abs(1.f -umath::abs(cp.m_normalWorldOnB.y())) > 0.2)
+		//if(pragma::math::abs(1.f -pragma::math::abs(cp.m_normalWorldOnB.y())) > 0.2)
 		//	Con::cwar<<cp.m_normalWorldOnB.x()<<","<<cp.m_normalWorldOnB.y()<<","<<cp.m_normalWorldOnB.z()<<Con::endl;
 #if CONVEX_NORMAL_EDGE_RESOLVE == 1
 		auto *obj0 = static_cast<PhysCollisionObject*>(colObj0Wrap->getCollisionObject()->getUserPointer());

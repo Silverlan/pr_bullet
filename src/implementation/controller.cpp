@@ -22,7 +22,7 @@ Vector3 pragma::physics::PhysContactInfo::GetContactNormal(const Vector3 &n, int
 double pragma::physics::PhysContactInfo::CalcXZDistance(const btManifoldPoint &contactPoint, int8_t controllerIndex)
 {
 	auto &localPoint = (controllerIndex == 0) ? contactPoint.m_localPointA : contactPoint.m_localPointB;
-	return umath::pow2(localPoint.x()) + umath::pow2(localPoint.z());
+	return pragma::math::pow2(localPoint.x()) + pragma::math::pow2(localPoint.z());
 }
 
 pragma::physics::PhysContactInfo::PhysContactInfo(const btManifoldPoint &contactPoint, int8_t controllerIndex) : contactPoint {contactPoint}, controllerIndex {controllerIndex} {}
@@ -33,8 +33,8 @@ double pragma::physics::PhysContactInfo::CalcXZDistance() const { return CalcXZD
 
 /////////////
 
-pragma::physics::BtController::BtController(IEnvironment &env, const std::shared_ptr<BtConvexShape> &shape, const util::TSharedHandle<IGhostObject> &ghostObject, std::unique_ptr<PhysKinematicCharacterController> controller, const Vector3 &halfExtents, ShapeType shapeType)
-    : IController {env, util::shared_handle_cast<IGhostObject, ICollisionObject>(ghostObject), halfExtents, shapeType}, m_controller {std::move(controller)}, m_shape {shape}
+pragma::physics::BtController::BtController(IEnvironment &env, const std::shared_ptr<BtConvexShape> &shape, const pragma::util::TSharedHandle<IGhostObject> &ghostObject, std::unique_ptr<PhysKinematicCharacterController> controller, const Vector3 &halfExtents, ShapeType shapeType)
+    : IController {env, pragma::util::shared_handle_cast<IGhostObject, ICollisionObject>(ghostObject), halfExtents, shapeType}, m_controller {std::move(controller)}, m_shape {shape}
 {
 }
 pragma::physics::BtEnvironment &pragma::physics::BtController::GetBtEnv() const { return static_cast<BtEnvironment &>(m_physEnv); }
@@ -131,8 +131,8 @@ Vector3 pragma::physics::BtController::GetPos() const
 void pragma::physics::BtController::SetUpDirection(const Vector3 &up) { m_controller->setUp(BtEnvironment::ToBtNormal(up)); }
 Vector3 pragma::physics::BtController::GetUpDirection() const { return BtEnvironment::ToPragmaNormal(m_controller->getUp()); }
 
-void pragma::physics::BtController::SetSlopeLimit(umath::Degree slopeLimit) { m_controller->setMaxSlope(umath::deg_to_rad(slopeLimit)); }
-umath::Degree pragma::physics::BtController::GetSlopeLimit() const { return umath::rad_to_deg(m_controller->getMaxSlope()); }
+void pragma::physics::BtController::SetSlopeLimit(pragma::math::Degree slopeLimit) { m_controller->setMaxSlope(pragma::math::deg_to_rad(slopeLimit)); }
+pragma::math::Degree pragma::physics::BtController::GetSlopeLimit() const { return pragma::math::rad_to_deg(m_controller->getMaxSlope()); }
 
 void pragma::physics::BtController::SetStepHeight(float stepHeight) { m_controller->setStepHeight(BtEnvironment::ToBtDistance(stepHeight)); }
 float pragma::physics::BtController::GetStepHeight() const { return BtEnvironment::ToPragmaDistance(m_controller->getStepHeight()); }
@@ -254,13 +254,13 @@ bool pragma::physics::BtController::SetGroundContactPoint(const btManifoldPoint 
 {
 	auto d = PhysContactInfo::CalcXZDistance(contactPoint, idx);
 	if(m_groundInfo.has_value())
-		m_groundInfo->minContactDistance = umath::min(m_groundInfo->contactDistance, d);
+		m_groundInfo->minContactDistance = pragma::math::min(m_groundInfo->contactDistance, d);
 
 	// Check if ground is walkable
 	auto n = PhysContactInfo::GetContactNormal(uvec::create(contactPoint.m_normalWorldOnB), idx);
-	auto angle = umath::acos(uvec::dot(n, GetUpDirection()));
+	auto angle = pragma::math::acos(uvec::dot(n, GetUpDirection()));
 	auto slopeLimit = GetSlopeLimit();
-	auto bGroundWalkable = (angle <= umath::deg_to_rad(slopeLimit));
+	auto bGroundWalkable = (angle <= pragma::math::deg_to_rad(slopeLimit));
 
 	auto pos = uvec::create(((idx == 0) ? contactPoint.getPositionWorldOnA() : contactPoint.getPositionWorldOnB()) / BtEnvironment::WORLD_SCALE);
 	//GetOwner()->GetEntity().GetNetworkState()->GetGameState()->DrawLine(pos,pos +n *100.f,colors::Red,0.3f);
@@ -277,13 +277,13 @@ bool pragma::physics::BtController::SetGroundContactPoint(const btManifoldPoint 
 	m_groundInfo = {GroundInfo {contactPoint, static_cast<int8_t>(idx)}};
 	m_groundInfo->groundWalkable = bGroundWalkable;
 	m_groundInfo->contactDistance = d;
-	m_groundInfo->minContactDistance = umath::min(d, dCur);
+	m_groundInfo->minContactDistance = pragma::math::min(d, dCur);
 	auto &contactInfo = m_groundInfo->contactInfo;
 
 	auto *obj0 = static_cast<pragma::physics::ICollisionObject *>(o->getUserPointer());
 	auto *obj1 = static_cast<pragma::physics::ICollisionObject *>(oOther->getUserPointer());
-	contactInfo.contactObject0 = (obj0 != nullptr) ? util::weak_shared_handle_cast<IBase, ICollisionObject>(obj0->GetHandle()) : util::TWeakSharedHandle<ICollisionObject> {};
-	contactInfo.contactObject1 = (obj1 != nullptr) ? util::weak_shared_handle_cast<IBase, ICollisionObject>(obj1->GetHandle()) : util::TWeakSharedHandle<ICollisionObject> {};
+	contactInfo.contactObject0 = (obj0 != nullptr) ? pragma::util::weak_shared_handle_cast<IBase, ICollisionObject>(obj0->GetHandle()) : pragma::util::TWeakSharedHandle<ICollisionObject> {};
+	contactInfo.contactObject1 = (obj1 != nullptr) ? pragma::util::weak_shared_handle_cast<IBase, ICollisionObject>(obj1->GetHandle()) : pragma::util::TWeakSharedHandle<ICollisionObject> {};
 
 	auto fGetShape = [](pragma::physics::ICollisionObject &o, int shapeIdx) -> pragma::physics::IShape * {
 		auto *shape = o.GetCollisionShape();

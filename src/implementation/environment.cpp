@@ -40,7 +40,7 @@ enum class BulletBroadphaseType : uint32_t {
 };
 
 const double pragma::physics::BtEnvironment::WORLD_SCALE = pragma::units_to_metres(1.0);
-const double pragma::physics::BtEnvironment::WORLD_SCALE_SQR = umath::pow(BtEnvironment::WORLD_SCALE, 2.0);
+const double pragma::physics::BtEnvironment::WORLD_SCALE_SQR = pragma::math::pow(BtEnvironment::WORLD_SCALE, 2.0);
 const float pragma::physics::BtEnvironment::CCD_MOTION_THRESHOLD = 4.f * static_cast<float>(WORLD_SCALE);
 const float pragma::physics::BtEnvironment::CCD_SWEPT_SPHERE_RADIUS = 2.f * static_cast<float>(WORLD_SCALE);
 static const float PHYS_CONSTRAINT_DEBUG_DRAW_SIZE = 100.f;
@@ -150,7 +150,7 @@ pragma::physics::BtEnvironment::BtEnvironment(pragma::NetworkState &state) : pra
 #elif PHYS_WORLD_TYPE == PHYS_WORLD_TYPE_DISCRETE_DYNAMICS
 	m_btWorld = std::make_unique<PhysBulletWorld>(m_btDispatcher.get(), m_btOverlappingPairCache.get(), m_btSolver.get(), m_btCollisionConfiguration.get());
 #elif PHYS_WORLD_TYPE == PHYS_WORLD_TYPE_DISCRETE_DYNAMICS_MT
-	auto numSolvers = umath::min(std::thread::hardware_concurrency(), static_cast<uint32_t>(16));
+	auto numSolvers = pragma::math::min(std::thread::hardware_concurrency(), static_cast<uint32_t>(16));
 	m_constraintSolverPool = std::unique_ptr<btConstraintSolverPoolMt>(new btConstraintSolverPoolMt {static_cast<int32_t>(numSolvers)});
 	m_btWorld = std::make_unique<PhysBulletWorld>(m_btDispatcher.get(), m_btOverlappingPairCache.get(), m_constraintSolverPool.get(), m_btSolver.get(), m_btCollisionConfiguration.get());
 #endif
@@ -166,8 +166,8 @@ pragma::physics::BtEnvironment::BtEnvironment(pragma::NetworkState &state) : pra
 	m_softBodyWorldInfo->m_sparsesdf.Initialize();
 }
 pragma::physics::BtEnvironment::~BtEnvironment() {}
-umath::Transform pragma::physics::BtEnvironment::CreateTransform(const btTransform &btTransform) { return umath::Transform {ToPragmaPosition(btTransform.getOrigin()), uquat::create(btTransform.getRotation())}; }
-btTransform pragma::physics::BtEnvironment::CreateBtTransform(const umath::Transform &t) { return btTransform {uquat::create_bt(t.GetRotation()), ToBtPosition(t.GetOrigin())}; }
+pragma::math::Transform pragma::physics::BtEnvironment::CreateTransform(const btTransform &btTransform) { return pragma::math::Transform {ToPragmaPosition(btTransform.getOrigin()), uquat::create(btTransform.getRotation())}; }
+btTransform pragma::physics::BtEnvironment::CreateBtTransform(const pragma::math::Transform &t) { return btTransform {uquat::create_bt(t.GetRotation()), ToBtPosition(t.GetOrigin())}; }
 Vector3 pragma::physics::BtEnvironment::ToPragmaPosition(const btVector3 &pos) { return Vector3 {pos.x(), pos.y(), pos.z()} / static_cast<float>(WORLD_SCALE); }
 Color pragma::physics::BtEnvironment::ToPragmaColor(const btVector3 &col) { return Color {static_cast<int16_t>(col.x() * 255.f), static_cast<int16_t>(col.y() * 255.f), static_cast<int16_t>(col.z() * 255.f)}; }
 btVector3 pragma::physics::BtEnvironment::ToBtPosition(const Vector3 &pos) { return btVector3 {pos.x, pos.y, pos.z} * static_cast<float>(WORLD_SCALE); }
@@ -176,12 +176,12 @@ btVector3 pragma::physics::BtEnvironment::ToBtNormal(const Vector3 &n) { return 
 double pragma::physics::BtEnvironment::ToPragmaDistance(btScalar d) { return d / WORLD_SCALE; }
 btScalar pragma::physics::BtEnvironment::ToBtDistance(double d) { return d * WORLD_SCALE; }
 std::shared_ptr<pragma::physics::IMaterial> pragma::physics::BtEnvironment::CreateMaterial(float staticFriction, float dynamicFriction, float restitution) { return CreateSharedPtr<BtMaterial>(*this, staticFriction, dynamicFriction, restitution); }
-util::TSharedHandle<pragma::physics::ICollisionObject> pragma::physics::BtEnvironment::CreatePlane(const Vector3 &n, float d, const IMaterial &mat)
+pragma::util::TSharedHandle<pragma::physics::ICollisionObject> pragma::physics::BtEnvironment::CreatePlane(const Vector3 &n, float d, const IMaterial &mat)
 {
 	// TODO
 	return nullptr;
 }
-util::TSharedHandle<pragma::physics::IVehicle> pragma::physics::BtEnvironment::CreateVehicle(const VehicleCreateInfo &vhcDesc)
+pragma::util::TSharedHandle<pragma::physics::IVehicle> pragma::physics::BtEnvironment::CreateVehicle(const VehicleCreateInfo &vhcDesc)
 {
 	// TODO
 	return nullptr;
@@ -313,34 +313,34 @@ btCollisionDispatcher *pragma::physics::BtEnvironment::GetBtCollisionDispatcher(
 btBroadphaseInterface *pragma::physics::BtEnvironment::GetBtOverlappingPairCache() { return m_btOverlappingPairCache.get(); }
 btSequentialImpulseConstraintSolver *pragma::physics::BtEnvironment::GetBtConstraintSolver() { return m_btSolver.get(); }
 btSoftBodyWorldInfo *pragma::physics::BtEnvironment::GetBtSoftBodyWorldInfo() { return m_softBodyWorldInfo.get(); }
-util::TSharedHandle<pragma::physics::IFixedConstraint> pragma::physics::BtEnvironment::AddFixedConstraint(std::unique_ptr<btFixedConstraint> c)
+pragma::util::TSharedHandle<pragma::physics::IFixedConstraint> pragma::physics::BtEnvironment::AddFixedConstraint(std::unique_ptr<btFixedConstraint> c)
 {
 	c->setDbgDrawSize(PHYS_CONSTRAINT_DEBUG_DRAW_SIZE);
 	auto constraint = CreateSharedHandle<BtFixedConstraint>(*this, std::move(c));
 	AddConstraint(*constraint);
-	return util::shared_handle_cast<BtFixedConstraint, IFixedConstraint>(constraint);
+	return pragma::util::shared_handle_cast<BtFixedConstraint, IFixedConstraint>(constraint);
 }
-util::TSharedHandle<pragma::physics::IBallSocketConstraint> pragma::physics::BtEnvironment::AddBallSocketConstraint(std::unique_ptr<btPoint2PointConstraint> c)
+pragma::util::TSharedHandle<pragma::physics::IBallSocketConstraint> pragma::physics::BtEnvironment::AddBallSocketConstraint(std::unique_ptr<btPoint2PointConstraint> c)
 {
 	c->setDbgDrawSize(PHYS_CONSTRAINT_DEBUG_DRAW_SIZE);
 	auto constraint = CreateSharedHandle<BtBallSocketConstraint>(*this, std::move(c));
 	AddConstraint(*constraint);
-	return util::shared_handle_cast<BtBallSocketConstraint, IBallSocketConstraint>(constraint);
+	return pragma::util::shared_handle_cast<BtBallSocketConstraint, IBallSocketConstraint>(constraint);
 }
-util::TSharedHandle<pragma::physics::IHingeConstraint> pragma::physics::BtEnvironment::AddHingeConstraint(std::unique_ptr<btHingeConstraint> c)
+pragma::util::TSharedHandle<pragma::physics::IHingeConstraint> pragma::physics::BtEnvironment::AddHingeConstraint(std::unique_ptr<btHingeConstraint> c)
 {
 	c->setDbgDrawSize(PHYS_CONSTRAINT_DEBUG_DRAW_SIZE);
 	auto constraint = CreateSharedHandle<BtHingeConstraint>(*this, std::move(c));
 	AddConstraint(*constraint);
-	return util::shared_handle_cast<BtHingeConstraint, IHingeConstraint>(constraint);
+	return pragma::util::shared_handle_cast<BtHingeConstraint, IHingeConstraint>(constraint);
 }
-util::TSharedHandle<pragma::physics::ISliderConstraint> pragma::physics::BtEnvironment::AddSliderConstraint(std::unique_ptr<btSliderConstraint> c)
+pragma::util::TSharedHandle<pragma::physics::ISliderConstraint> pragma::physics::BtEnvironment::AddSliderConstraint(std::unique_ptr<btSliderConstraint> c)
 {
 	// TODO
 	/*c->setDbgDrawSize(PHYS_CONSTRAINT_DEBUG_DRAW_SIZE);
 	auto constraint = CreateSharedHandle<BtSliderConstraint>(*this,std::move(c));
 	AddConstraint(*constraint);
-	return util::shared_handle_cast<BtSliderConstraint,ISliderConstraint>(constraint);
+	return pragma::util::shared_handle_cast<BtSliderConstraint,ISliderConstraint>(constraint);
 
 	auto *rigidBody0 = hBody.Get();
 	auto *rigidBody1 = bodySrc;
@@ -360,33 +360,33 @@ util::TSharedHandle<pragma::physics::ISliderConstraint> pragma::physics::BtEnvir
 		slider->SetLimit(pragma::physics::IDoFSpringConstraint::AxisType::Angular,pragma::Axis::X,0.f,0.f);
 		slider->SetLimit(pragma::physics::IDoFSpringConstraint::AxisType::Angular,pragma::Axis::Y,0.f,0.f);
 		slider->SetLimit(pragma::physics::IDoFSpringConstraint::AxisType::Angular,pragma::Axis::Z,0.f,0.f);
-		m_constraints.push_back(util::shared_handle_cast<pragma::physics::IDoFSpringConstraint,pragma::physics::IConstraint>(slider));
+		m_constraints.push_back(pragma::util::shared_handle_cast<pragma::physics::IDoFSpringConstraint,pragma::physics::IConstraint>(slider));
 	}
 	*/
 	return nullptr;
 }
-util::TSharedHandle<pragma::physics::IConeTwistConstraint> pragma::physics::BtEnvironment::AddConeTwistConstraint(std::unique_ptr<btConeTwistConstraint> c)
+pragma::util::TSharedHandle<pragma::physics::IConeTwistConstraint> pragma::physics::BtEnvironment::AddConeTwistConstraint(std::unique_ptr<btConeTwistConstraint> c)
 {
 	c->setDbgDrawSize(PHYS_CONSTRAINT_DEBUG_DRAW_SIZE);
 	auto constraint = CreateSharedHandle<BtConeTwistConstraint>(*this, std::move(c));
 	AddConstraint(*constraint);
-	return util::shared_handle_cast<BtConeTwistConstraint, IConeTwistConstraint>(constraint);
+	return pragma::util::shared_handle_cast<BtConeTwistConstraint, IConeTwistConstraint>(constraint);
 }
-util::TSharedHandle<pragma::physics::IDoFConstraint> pragma::physics::BtEnvironment::AddDoFConstraint(std::unique_ptr<btGeneric6DofConstraint> c)
+pragma::util::TSharedHandle<pragma::physics::IDoFConstraint> pragma::physics::BtEnvironment::AddDoFConstraint(std::unique_ptr<btGeneric6DofConstraint> c)
 {
 	c->setDbgDrawSize(PHYS_CONSTRAINT_DEBUG_DRAW_SIZE);
 	auto constraint = CreateSharedHandle<BtDoFConstraint>(*this, std::move(c));
 	AddConstraint(*constraint);
-	return util::shared_handle_cast<BtDoFConstraint, IDoFConstraint>(constraint);
+	return pragma::util::shared_handle_cast<BtDoFConstraint, IDoFConstraint>(constraint);
 }
-util::TSharedHandle<pragma::physics::IDoFSpringConstraint> pragma::physics::BtEnvironment::AddDoFSpringConstraint(std::unique_ptr<btGeneric6DofSpring2Constraint> c)
+pragma::util::TSharedHandle<pragma::physics::IDoFSpringConstraint> pragma::physics::BtEnvironment::AddDoFSpringConstraint(std::unique_ptr<btGeneric6DofSpring2Constraint> c)
 {
 	c->setDbgDrawSize(PHYS_CONSTRAINT_DEBUG_DRAW_SIZE);
 	auto constraint = CreateSharedHandle<BtDoFSpringConstraint>(*this, std::move(c));
 	AddConstraint(*constraint);
-	return util::shared_handle_cast<BtDoFSpringConstraint, IDoFSpringConstraint>(constraint);
+	return pragma::util::shared_handle_cast<BtDoFSpringConstraint, IDoFSpringConstraint>(constraint);
 }
-util::TSharedHandle<pragma::physics::IFixedConstraint> pragma::physics::BtEnvironment::CreateFixedConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB)
+pragma::util::TSharedHandle<pragma::physics::IFixedConstraint> pragma::physics::BtEnvironment::CreateFixedConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB)
 {
 	auto &bodyA = ToBtType(a).GetInternalObject();
 	auto &bodyB = ToBtType(b).GetInternalObject();
@@ -402,20 +402,20 @@ util::TSharedHandle<pragma::physics::IFixedConstraint> pragma::physics::BtEnviro
 	transformB.setRotation(btQuaternion(rotB.x, rotB.y, rotB.z, rotB.w));
 	return AddFixedConstraint(std::make_unique<btFixedConstraint>(bodyA, bodyB, transformA, transformB));
 }
-util::TSharedHandle<pragma::physics::IBallSocketConstraint> pragma::physics::BtEnvironment::CreateBallSocketConstraint(IRigidBody &a, const Vector3 &pivotA, IRigidBody &b, const Vector3 &pivotB)
+pragma::util::TSharedHandle<pragma::physics::IBallSocketConstraint> pragma::physics::BtEnvironment::CreateBallSocketConstraint(IRigidBody &a, const Vector3 &pivotA, IRigidBody &b, const Vector3 &pivotB)
 {
 	auto &bodyA = ToBtType(a).GetInternalObject();
 	auto &bodyB = ToBtType(b).GetInternalObject();
 	return AddBallSocketConstraint(std::make_unique<btPoint2PointConstraint>(bodyA, bodyB, btVector3(pivotA.x, pivotA.y, pivotA.z) * WORLD_SCALE, btVector3(pivotB.x, pivotB.y, pivotB.z) * WORLD_SCALE));
 }
-util::TSharedHandle<pragma::physics::IHingeConstraint> pragma::physics::BtEnvironment::CreateHingeConstraint(IRigidBody &a, const Vector3 &pivotA, IRigidBody &b, const Vector3 &pivotB, const Vector3 &axis)
+pragma::util::TSharedHandle<pragma::physics::IHingeConstraint> pragma::physics::BtEnvironment::CreateHingeConstraint(IRigidBody &a, const Vector3 &pivotA, IRigidBody &b, const Vector3 &pivotB, const Vector3 &axis)
 {
 	auto &bodyA = ToBtType(a).GetInternalObject();
 	auto &bodyB = ToBtType(b).GetInternalObject();
 	btVector3 btAxis(axis.x, axis.y, axis.z);
 	return AddHingeConstraint(std::make_unique<btHingeConstraint>(bodyA, bodyB, btVector3(pivotA.x, pivotA.y, pivotA.z) * WORLD_SCALE, btVector3(pivotB.x, pivotB.y, pivotB.z) * WORLD_SCALE, btAxis, btAxis));
 }
-util::TSharedHandle<pragma::physics::ISliderConstraint> pragma::physics::BtEnvironment::CreateSliderConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &, IRigidBody &b, const Vector3 &pivotB, const Quat &)
+pragma::util::TSharedHandle<pragma::physics::ISliderConstraint> pragma::physics::BtEnvironment::CreateSliderConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &, IRigidBody &b, const Vector3 &pivotB, const Quat &)
 {
 	auto &bodyA = ToBtType(a).GetInternalObject();
 	auto &bodyB = ToBtType(b).GetInternalObject();
@@ -438,9 +438,9 @@ util::TSharedHandle<pragma::physics::ISliderConstraint> pragma::physics::BtEnvir
 	//btTransformB = btTransform::getIdentity();
 	return AddSliderConstraint(std::make_unique<btSliderConstraint>(bodyA, bodyB, btTransformA, btTransformB, true));
 }
-util::TSharedHandle<pragma::physics::IConeTwistConstraint> pragma::physics::BtEnvironment::CreateConeTwistConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB)
+pragma::util::TSharedHandle<pragma::physics::IConeTwistConstraint> pragma::physics::BtEnvironment::CreateConeTwistConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB)
 {
-	auto v = 1.f / sqrtf(2.f); // umath::cos(M_PI_4);
+	auto v = 1.f / sqrtf(2.f); // pragma::math::cos(M_PI_4);
 	auto rotSrc = rotA;
 	auto rotOffset = Quat(v, 0.f, -v, 0.f);
 	rotSrc = rotSrc * rotOffset;
@@ -459,7 +459,7 @@ util::TSharedHandle<pragma::physics::IConeTwistConstraint> pragma::physics::BtEn
 	btTransformB.setRotation(btQuaternion(rotTgt.x, rotTgt.y, rotTgt.z, rotTgt.w));
 	return AddConeTwistConstraint(std::make_unique<btConeTwistConstraint>(bodyA, bodyB, btTransformA, btTransformB));
 }
-util::TSharedHandle<pragma::physics::IDoFConstraint> pragma::physics::BtEnvironment::CreateDoFConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB)
+pragma::util::TSharedHandle<pragma::physics::IDoFConstraint> pragma::physics::BtEnvironment::CreateDoFConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB)
 {
 	auto &bodyA = ToBtType(a).GetInternalObject();
 	auto &bodyB = ToBtType(b).GetInternalObject();
@@ -474,7 +474,7 @@ util::TSharedHandle<pragma::physics::IDoFConstraint> pragma::physics::BtEnvironm
 	tB.setRotation(btQuaternion(rotB.x, rotB.y, rotB.z, rotB.w));
 	return AddDoFConstraint(std::make_unique<btGeneric6DofConstraint>(bodyA, bodyB, tA, tB, true));
 }
-util::TSharedHandle<pragma::physics::IDoFSpringConstraint> pragma::physics::BtEnvironment::CreateDoFSpringConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB)
+pragma::util::TSharedHandle<pragma::physics::IDoFSpringConstraint> pragma::physics::BtEnvironment::CreateDoFSpringConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB)
 {
 	auto &bodyA = ToBtType(a).GetInternalObject();
 	auto &bodyB = ToBtType(b).GetInternalObject();
@@ -522,7 +522,7 @@ std::shared_ptr<pragma::physics::ICompoundShape> pragma::physics::BtEnvironment:
 		btQuaternion q(forward, angle);
 
 		auto cylShape = CreateSharedPtr<pragma::physics::BtConvexShape>(*this, std::make_shared<btCylinderShapeZ>(btVector3(btScalar(innerRadius), btScalar(innerRadius), btScalar((SIMD_PI / static_cast<double>(subdivisions)) + 0.5 * gap))));
-		cylShape->SetLocalPose(umath::Transform {uvec::create(position), uquat::create(q)});
+		cylShape->SetLocalPose(pragma::math::Transform {uvec::create(position), uquat::create(q)});
 
 		auto pShape = std::static_pointer_cast<IShape>(cylShape);
 		ptrShapes.push_back(pShape);
@@ -545,26 +545,26 @@ std::shared_ptr<pragma::physics::IShape> pragma::physics::BtEnvironment::CreateH
 	auto btShape = std::make_shared<btHeightfieldTerrainShape>(width, length, data.data(), 1.f, -maxHeight, maxHeight, upAxis, PHY_ScalarType::PHY_FLOAT, false);
 	return CreateSharedPtr<BtHeightfield>(*this, btShape, width, length, maxHeight, static_cast<uint8_t>(upAxis));
 }
-util::TSharedHandle<pragma::physics::IGhostObject> pragma::physics::BtEnvironment::CreateGhostObject(IShape &shape)
+pragma::util::TSharedHandle<pragma::physics::IGhostObject> pragma::physics::BtEnvironment::CreateGhostObject(IShape &shape)
 {
 	auto ghost = CreateSharedHandle<BtGhostObject>(*this, std::make_unique<btPairCachingGhostObject>(), shape);
 	AddCollisionObject(*ghost);
-	return util::shared_handle_cast<BtGhostObject, IGhostObject>(ghost);
+	return pragma::util::shared_handle_cast<BtGhostObject, IGhostObject>(ghost);
 }
-util::TSharedHandle<pragma::physics::ICollisionObject> pragma::physics::BtEnvironment::CreateCollisionObject(IShape &shape)
+pragma::util::TSharedHandle<pragma::physics::ICollisionObject> pragma::physics::BtEnvironment::CreateCollisionObject(IShape &shape)
 {
 	auto collisionObject = CreateSharedHandle<pragma::physics::BtCollisionObject>(*this, std::make_unique<btCollisionObject>(), shape);
 	AddCollisionObject(*collisionObject);
-	return util::shared_handle_cast<BtCollisionObject, ICollisionObject>(collisionObject);
+	return pragma::util::shared_handle_cast<BtCollisionObject, ICollisionObject>(collisionObject);
 }
-util::TSharedHandle<pragma::physics::IRigidBody> pragma::physics::BtEnvironment::CreateRigidBody(IShape &shape, bool dynamic)
+pragma::util::TSharedHandle<pragma::physics::IRigidBody> pragma::physics::BtEnvironment::CreateRigidBody(IShape &shape, bool dynamic)
 {
 	auto mass = shape.GetMass();
 	if(dynamic == false)
 		mass = 0.f;
 	auto collisionObject = CreateSharedHandle<BtRigidBody>(*this, dynamic_cast<BtShape &>(shape));
 	AddCollisionObject(*collisionObject);
-	return util::shared_handle_cast<BtRigidBody, IRigidBody>(collisionObject);
+	return pragma::util::shared_handle_cast<BtRigidBody, IRigidBody>(collisionObject);
 }
 static btSoftBody *createSoftBody(btSoftRigidDynamicsWorld *world, btSoftBodyWorldInfo *info, const btScalar s, const int numX, const int numY, const int fixed)
 {
@@ -656,7 +656,7 @@ static std::unique_ptr<btSoftBody> createSoftBody(const pragma::physics::PhysSof
 	world->addSoftBody(cloth.get());
 	return cloth;
 }
-util::TSharedHandle<pragma::physics::ISoftBody> pragma::physics::BtEnvironment::CreateSoftBody(const PhysSoftBodyInfo &info, float mass, const std::vector<Vector3> &verts, const std::vector<uint16_t> &indices, std::vector<uint16_t> &indexTranslations)
+pragma::util::TSharedHandle<pragma::physics::ISoftBody> pragma::physics::BtEnvironment::CreateSoftBody(const PhysSoftBodyInfo &info, float mass, const std::vector<Vector3> &verts, const std::vector<uint16_t> &indices, std::vector<uint16_t> &indexTranslations)
 {
 	btAlignedObjectArray<btVector3> vtx;
 	vtx.reserve(static_cast<int32_t>(verts.size()));
@@ -671,7 +671,7 @@ util::TSharedHandle<pragma::physics::ISoftBody> pragma::physics::BtEnvironment::
 			auto &v = vtx.at(i);
 			auto it = std::find_if(sbVerts.begin(), sbVerts.end(), [&v](const Vector3d &other) {
 				const auto EPSILON = 0.01f; //1.f;
-				return umath::abs(other.x - v.x()) / WORLD_SCALE < EPSILON && umath::abs(other.y - v.y()) / WORLD_SCALE < EPSILON && umath::abs(other.z - v.z()) / WORLD_SCALE < EPSILON;
+				return pragma::math::abs(other.x - v.x()) / WORLD_SCALE < EPSILON && pragma::math::abs(other.y - v.y()) / WORLD_SCALE < EPSILON && pragma::math::abs(other.z - v.z()) / WORLD_SCALE < EPSILON;
 			});
 			if(it == sbVerts.end()) {
 				sbVerts.push_back({v.x(), v.y(), v.z()});
@@ -715,7 +715,7 @@ util::TSharedHandle<pragma::physics::ISoftBody> pragma::physics::BtEnvironment::
 		auto shape = CreateSharedPtr<BtShape>(*this, btShape, false);
 		auto softBody = CreateSharedHandle<BtSoftBody>(*this, std::move(body), *shape, indexTranslations);
 		AddCollisionObject(*softBody);
-		return util::shared_handle_cast<BtSoftBody, ISoftBody>(softBody);
+		return pragma::util::shared_handle_cast<BtSoftBody, ISoftBody>(softBody);
 		/*c_game->AddCallback("Tick",FunctionCallback<void>::Create([]() {
 		softBody->activate(true);
 		//m_dynamicsWorld->stepSimulation(c_game->DeltaTickTime(),1,c_game->DeltaTickTime());
@@ -964,7 +964,7 @@ Bool pragma::physics::BtEnvironment::RayCast(const pragma::physics::TraceData &d
 			auto *colObj = static_cast<ICollisionObject *>(obj->getUserPointer());
 			if(colObj != nullptr) {
 				auto &r = results->back();
-				r.collisionObj = util::weak_shared_handle_cast<IBase, ICollisionObject>(colObj->GetHandle());
+				r.collisionObj = pragma::util::weak_shared_handle_cast<IBase, ICollisionObject>(colObj->GetHandle());
 				auto *physObj = colObj->GetPhysObj();
 				if(physObj != nullptr) {
 					r.physObj = physObj->GetHandle();
@@ -997,7 +997,7 @@ Bool pragma::physics::BtEnvironment::RayCast(const pragma::physics::TraceData &d
 				auto *obj = btResult.m_collisionObjects[i];
 				auto *colObj = static_cast<ICollisionObject *>(obj->getUserPointer());
 				if(colObj != nullptr) {
-					r.collisionObj = util::weak_shared_handle_cast<IBase, ICollisionObject>(colObj->GetHandle());
+					r.collisionObj = pragma::util::weak_shared_handle_cast<IBase, ICollisionObject>(colObj->GetHandle());
 					auto *physObj = colObj->GetPhysObj();
 					if(physObj != nullptr) {
 						r.physObj = physObj->GetHandle();
@@ -1330,10 +1330,10 @@ void pragma::physics::BtEnvironment::SimulationCallback(double)
 	}
 }
 
-util::TSharedHandle<pragma::physics::IController> pragma::physics::BtEnvironment::CreateCapsuleController(float halfWidth, float halfHeight, float stepHeight, float slopeLimitDeg, const umath::Transform &startTransform)
+pragma::util::TSharedHandle<pragma::physics::IController> pragma::physics::BtEnvironment::CreateCapsuleController(float halfWidth, float halfHeight, float stepHeight, float slopeLimitDeg, const pragma::math::Transform &startTransform)
 {
 	auto shape = CreateCapsuleShape(halfWidth, halfHeight, GetGenericMaterial());
-	auto ghostObject = util::shared_handle_cast<IGhostObject, BtGhostObject>(CreateGhostObject(*shape));
+	auto ghostObject = pragma::util::shared_handle_cast<IGhostObject, BtGhostObject>(CreateGhostObject(*shape));
 	ghostObject->SetWorldTransform(startTransform);
 
 	ghostObject->SetCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
@@ -1345,19 +1345,19 @@ util::TSharedHandle<pragma::physics::IController> pragma::physics::BtEnvironment
 	auto controller = std::unique_ptr<PhysKinematicCharacterController>(new PhysKinematicCharacterController {&btGhostObject, &btShape, btScalar(stepHeight * WORLD_SCALE), btVector3 {0.0, 1.0, 0.0}});
 	controller->setGravity({0.0, 0.0, 0.0});
 	controller->setUseGhostSweepTest(false); // If set to true => causes penetration issues with convex meshes, resulting in bouncy physics
-	controller->setMaxSlope(umath::deg_to_rad(slopeLimitDeg));
+	controller->setMaxSlope(pragma::math::deg_to_rad(slopeLimitDeg));
 	AddAction(controller.get());
 	Vector3 halfExtents {halfWidth, halfHeight, halfWidth};
-	auto btController = util::shared_handle_cast<BtController, IController>(
-	  CreateSharedHandle<pragma::physics::BtController>(*this, std::dynamic_pointer_cast<BtConvexShape>(shape), util::shared_handle_cast<BtGhostObject, IGhostObject>(ghostObject), std::move(controller), halfExtents, IController::ShapeType::Capsule));
+	auto btController = pragma::util::shared_handle_cast<BtController, IController>(
+	  CreateSharedHandle<pragma::physics::BtController>(*this, std::dynamic_pointer_cast<BtConvexShape>(shape), pragma::util::shared_handle_cast<BtGhostObject, IGhostObject>(ghostObject), std::move(controller), halfExtents, IController::ShapeType::Capsule));
 	AddController(*btController);
 	return btController;
 }
 
-util::TSharedHandle<pragma::physics::IController> pragma::physics::BtEnvironment::CreateBoxController(const Vector3 &halfExtents, float stepHeight, float slopeLimitDeg, const umath::Transform &startTransform)
+pragma::util::TSharedHandle<pragma::physics::IController> pragma::physics::BtEnvironment::CreateBoxController(const Vector3 &halfExtents, float stepHeight, float slopeLimitDeg, const pragma::math::Transform &startTransform)
 {
 	auto shape = CreateBoxShape(halfExtents, GetGenericMaterial());
-	auto ghostObject = util::shared_handle_cast<IGhostObject, BtGhostObject>(CreateGhostObject(*shape));
+	auto ghostObject = pragma::util::shared_handle_cast<IGhostObject, BtGhostObject>(CreateGhostObject(*shape));
 	ghostObject->SetWorldTransform(startTransform);
 
 	ghostObject->SetCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
@@ -1369,11 +1369,11 @@ util::TSharedHandle<pragma::physics::IController> pragma::physics::BtEnvironment
 	auto controller = std::unique_ptr<PhysKinematicCharacterController>(new PhysKinematicCharacterController {&btGhostObject, &btShape, btScalar(stepHeight * WORLD_SCALE)});
 	controller->setGravity({0.0, 0.0, 0.0});
 	controller->setUseGhostSweepTest(false); // If set to true => causes penetration issues with convex meshes, resulting in bouncy physics
-	controller->setMaxSlope(umath::deg_to_rad(slopeLimitDeg));
+	controller->setMaxSlope(pragma::math::deg_to_rad(slopeLimitDeg));
 
 	auto *world = GetWorld();
 	AddAction(controller.get());
-	return util::shared_handle_cast<BtController, IController>(
-	  CreateSharedHandle<pragma::physics::BtController>(*this, std::dynamic_pointer_cast<BtConvexShape>(shape), util::shared_handle_cast<BtGhostObject, IGhostObject>(ghostObject), std::move(controller), halfExtents, IController::ShapeType::Capsule));
+	return pragma::util::shared_handle_cast<BtController, IController>(
+	  CreateSharedHandle<pragma::physics::BtController>(*this, std::dynamic_pointer_cast<BtConvexShape>(shape), pragma::util::shared_handle_cast<BtGhostObject, IGhostObject>(ghostObject), std::move(controller), halfExtents, IController::ShapeType::Capsule));
 }
 #pragma optimize("", on)

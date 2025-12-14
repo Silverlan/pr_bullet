@@ -21,8 +21,8 @@ export namespace pragma::physics {
 		Vector3 GetContactNormal() const;
 		double CalcXZDistance() const;
 		btManifoldPoint contactPoint {};
-		util::TWeakSharedHandle<ICollisionObject> contactObject0 {};
-		util::TWeakSharedHandle<ICollisionObject> contactObject1 {};
+		pragma::util::TWeakSharedHandle<ICollisionObject> contactObject0 {};
+		pragma::util::TWeakSharedHandle<ICollisionObject> contactObject1 {};
 		std::weak_ptr<IShape> contactShape0 {};
 		std::weak_ptr<IShape> contactShape1 {};
 		int32_t surfaceMaterialId = -1;
@@ -60,8 +60,8 @@ export namespace pragma::physics {
 		virtual void SetUpDirection(const Vector3 &up) override;
 		virtual Vector3 GetUpDirection() const override;
 
-		virtual void SetSlopeLimit(umath::Degree slopeLimit) override;
-		virtual umath::Degree GetSlopeLimit() const override;
+		virtual void SetSlopeLimit(pragma::math::Degree slopeLimit) override;
+		virtual pragma::math::Degree GetSlopeLimit() const override;
 
 		virtual void SetStepHeight(float stepHeight) override;
 		virtual float GetStepHeight() const override;
@@ -79,7 +79,7 @@ export namespace pragma::physics {
 		bool SetGroundContactPoint(const btManifoldPoint &contactPoint, int32_t idx, const btCollisionObject *o, const btCollisionObject *oOther);
 		void ClearGroundContactPoint();
 	  protected:
-		BtController(IEnvironment &env, const std::shared_ptr<BtConvexShape> &shape, const util::TSharedHandle<IGhostObject> &ghostObject, std::unique_ptr<PhysKinematicCharacterController> controller, const Vector3 &halfExtents, ShapeType shapeType);
+		BtController(IEnvironment &env, const std::shared_ptr<BtConvexShape> &shape, const pragma::util::TSharedHandle<IGhostObject> &ghostObject, std::unique_ptr<PhysKinematicCharacterController> controller, const Vector3 &halfExtents, ShapeType shapeType);
 		virtual void RemoveWorldObject() override;
 		virtual void DoAddWorldObject() override;
 		virtual void DoMove(Vector3 &disp) override;

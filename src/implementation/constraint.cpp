@@ -169,11 +169,11 @@ pragma::physics::BtHingeConstraint::BtHingeConstraint(IEnvironment &env, std::un
 pragma::physics::BtHingeConstraint *pragma::physics::BtHingeConstraint::GetBtHingeConstraint() { return this; }
 btHingeConstraint &pragma::physics::BtHingeConstraint::GetInternalObject() const { return static_cast<btHingeConstraint &>(BtConstraint::GetInternalObject()); }
 
-void pragma::physics::BtHingeConstraint::SetLimit(umath::Radian lowerLimit, umath::Radian upperLimit)
+void pragma::physics::BtHingeConstraint::SetLimit(pragma::math::Radian lowerLimit, pragma::math::Radian upperLimit)
 {
 	// TODO
 }
-std::pair<umath::Radian, umath::Radian> pragma::physics::BtHingeConstraint::GetLimit() const
+std::pair<pragma::math::Radian, pragma::math::Radian> pragma::physics::BtHingeConstraint::GetLimit() const
 {
 	// TODO
 	return {};
@@ -264,8 +264,8 @@ void pragma::physics::BtDoFConstraint::SetAngularLimit(const EulerAngles &lower,
 	SetAngularUpperLimit(upper);
 }
 void pragma::physics::BtDoFConstraint::SetAngularLimit(const EulerAngles &lim) { SetAngularLimit(-lim, lim); }
-void pragma::physics::BtDoFConstraint::SetAngularLowerLimit(const EulerAngles &lim) { GetInternalObject().setAngularLowerLimit(btVector3(umath::deg_to_rad(lim.p), umath::deg_to_rad(lim.y), umath::deg_to_rad(lim.r))); }
-void pragma::physics::BtDoFConstraint::SetAngularUpperLimit(const EulerAngles &lim) { GetInternalObject().setAngularUpperLimit(btVector3(umath::deg_to_rad(lim.p), umath::deg_to_rad(lim.y), umath::deg_to_rad(lim.r))); }
+void pragma::physics::BtDoFConstraint::SetAngularLowerLimit(const EulerAngles &lim) { GetInternalObject().setAngularLowerLimit(btVector3(pragma::math::deg_to_rad(lim.p), pragma::math::deg_to_rad(lim.y), pragma::math::deg_to_rad(lim.r))); }
+void pragma::physics::BtDoFConstraint::SetAngularUpperLimit(const EulerAngles &lim) { GetInternalObject().setAngularUpperLimit(btVector3(pragma::math::deg_to_rad(lim.p), pragma::math::deg_to_rad(lim.y), pragma::math::deg_to_rad(lim.r))); }
 
 Vector3 pragma::physics::BtDoFConstraint::GetLinearLowerLimit() const
 {
@@ -283,13 +283,13 @@ EulerAngles pragma::physics::BtDoFConstraint::GetAngularLowerLimit() const
 {
 	btVector3 lowerLimit;
 	GetInternalObject().getAngularLowerLimit(lowerLimit);
-	return EulerAngles(umath::rad_to_deg(lowerLimit.x()), umath::rad_to_deg(lowerLimit.y()), umath::rad_to_deg(lowerLimit.z()));
+	return EulerAngles(pragma::math::rad_to_deg(lowerLimit.x()), pragma::math::rad_to_deg(lowerLimit.y()), pragma::math::rad_to_deg(lowerLimit.z()));
 }
 EulerAngles pragma::physics::BtDoFConstraint::GetAngularUpperLimit() const
 {
 	btVector3 upperLimit;
 	GetInternalObject().getAngularUpperLimit(upperLimit);
-	return EulerAngles(umath::rad_to_deg(upperLimit.x()), umath::rad_to_deg(upperLimit.y()), umath::rad_to_deg(upperLimit.z()));
+	return EulerAngles(pragma::math::rad_to_deg(upperLimit.x()), pragma::math::rad_to_deg(upperLimit.y()), pragma::math::rad_to_deg(upperLimit.z()));
 }
 
 Vector3 pragma::physics::BtDoFConstraint::GetAngularTargetVelocity() const
@@ -697,7 +697,7 @@ pragma::physics::BtDoFSpringConstraint::BtDoFSpringConstraint(IEnvironment &env,
 btGeneric6DofSpring2Constraint &pragma::physics::BtDoFSpringConstraint::GetInternalObject() const { return static_cast<btGeneric6DofSpring2Constraint &>(BtConstraint::GetInternalObject()); }
 inline int32_t get_axis_index(pragma::physics::BtDoFSpringConstraint::AxisType type, pragma::Axis axis)
 {
-	auto r = umath::to_integral(axis);
+	auto r = pragma::math::to_integral(axis);
 	if(type == pragma::physics::BtDoFSpringConstraint::AxisType::Angular)
 		r += 3u;
 	return r;
@@ -742,17 +742,17 @@ inline pragma::RotationOrder get_rotation_order(RotateOrder order)
 }
 pragma::physics::BtDoFSpringConstraint *pragma::physics::BtDoFSpringConstraint::GetBtDoFSpringConstraint() { return this; }
 void pragma::physics::BtDoFSpringConstraint::CalculateTransforms() { GetInternalObject().calculateTransforms(); }
-void pragma::physics::BtDoFSpringConstraint::CalculateTransforms(const umath::Transform &frameA, const umath::Transform &frameB) { GetInternalObject().calculateTransforms(GetBtEnv().CreateBtTransform(frameA), GetBtEnv().CreateBtTransform(frameB)); }
-btRotationalLimitMotor2 *pragma::physics::BtDoFSpringConstraint::GetRotationalLimitMotor(pragma::Axis index) const { return GetInternalObject().getRotationalLimitMotor(umath::to_integral(index)); }
+void pragma::physics::BtDoFSpringConstraint::CalculateTransforms(const pragma::math::Transform &frameA, const pragma::math::Transform &frameB) { GetInternalObject().calculateTransforms(GetBtEnv().CreateBtTransform(frameA), GetBtEnv().CreateBtTransform(frameB)); }
+btRotationalLimitMotor2 *pragma::physics::BtDoFSpringConstraint::GetRotationalLimitMotor(pragma::Axis index) const { return GetInternalObject().getRotationalLimitMotor(pragma::math::to_integral(index)); }
 btTranslationalLimitMotor2 *pragma::physics::BtDoFSpringConstraint::GetTranslationalLimitMotor() const { return GetInternalObject().getTranslationalLimitMotor(); }
-umath::Transform pragma::physics::BtDoFSpringConstraint::GetCalculatedTransformA() const { return GetBtEnv().CreateTransform(GetInternalObject().getCalculatedTransformA()); }
-umath::Transform pragma::physics::BtDoFSpringConstraint::GetCalculatedTransformB() const { return GetBtEnv().CreateTransform(GetInternalObject().getCalculatedTransformB()); }
-umath::Transform pragma::physics::BtDoFSpringConstraint::GetFrameOffsetA() const { return GetBtEnv().CreateTransform(GetInternalObject().getFrameOffsetA()); }
-umath::Transform pragma::physics::BtDoFSpringConstraint::GetFrameOffsetB() const { return GetBtEnv().CreateTransform(GetInternalObject().getFrameOffsetB()); }
-Vector3 pragma::physics::BtDoFSpringConstraint::GetAxis(pragma::Axis axisIndex) const { return uvec::create(GetInternalObject().getAxis(umath::to_integral(axisIndex))); }
-double pragma::physics::BtDoFSpringConstraint::GetAngle(pragma::Axis axisIndex) const { return GetInternalObject().getAngle(umath::to_integral(axisIndex)); }
-double pragma::physics::BtDoFSpringConstraint::GetRelativePivotPosition(pragma::Axis axisIndex) const { return GetInternalObject().getRelativePivotPosition(umath::to_integral(axisIndex)); }
-void pragma::physics::BtDoFSpringConstraint::SetFrames(const umath::Transform &frameA, const umath::Transform &frameB) { GetInternalObject().setFrames(GetBtEnv().CreateBtTransform(frameA), GetBtEnv().CreateBtTransform(frameB)); }
+pragma::math::Transform pragma::physics::BtDoFSpringConstraint::GetCalculatedTransformA() const { return GetBtEnv().CreateTransform(GetInternalObject().getCalculatedTransformA()); }
+pragma::math::Transform pragma::physics::BtDoFSpringConstraint::GetCalculatedTransformB() const { return GetBtEnv().CreateTransform(GetInternalObject().getCalculatedTransformB()); }
+pragma::math::Transform pragma::physics::BtDoFSpringConstraint::GetFrameOffsetA() const { return GetBtEnv().CreateTransform(GetInternalObject().getFrameOffsetA()); }
+pragma::math::Transform pragma::physics::BtDoFSpringConstraint::GetFrameOffsetB() const { return GetBtEnv().CreateTransform(GetInternalObject().getFrameOffsetB()); }
+Vector3 pragma::physics::BtDoFSpringConstraint::GetAxis(pragma::Axis axisIndex) const { return uvec::create(GetInternalObject().getAxis(pragma::math::to_integral(axisIndex))); }
+double pragma::physics::BtDoFSpringConstraint::GetAngle(pragma::Axis axisIndex) const { return GetInternalObject().getAngle(pragma::math::to_integral(axisIndex)); }
+double pragma::physics::BtDoFSpringConstraint::GetRelativePivotPosition(pragma::Axis axisIndex) const { return GetInternalObject().getRelativePivotPosition(pragma::math::to_integral(axisIndex)); }
+void pragma::physics::BtDoFSpringConstraint::SetFrames(const pragma::math::Transform &frameA, const pragma::math::Transform &frameB) { GetInternalObject().setFrames(GetBtEnv().CreateBtTransform(frameA), GetBtEnv().CreateBtTransform(frameB)); }
 void pragma::physics::BtDoFSpringConstraint::SetLinearLowerLimit(const Vector3 &linearLower) { GetInternalObject().setLinearLowerLimit(uvec::create_bt(linearLower) * BtEnvironment::WORLD_SCALE); }
 Vector3 pragma::physics::BtDoFSpringConstraint::GetLinearLowerLimit() const
 {

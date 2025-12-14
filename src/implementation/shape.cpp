@@ -44,8 +44,8 @@ void pragma::physics::BtShape::GetBoundingSphere(Vector3 &outCenter, float &outR
 // void pragma::physics::BtShape::SetTrigger(bool bTrigger) {m_bTrigger = bTrigger;}
 // bool pragma::physics::BtShape::IsTrigger() const {return m_bTrigger;}
 
-void pragma::physics::BtShape::SetLocalPose(const umath::Transform &t) { m_localPose = t; }
-umath::Transform pragma::physics::BtShape::GetLocalPose() const { return m_localPose; }
+void pragma::physics::BtShape::SetLocalPose(const pragma::math::Transform &t) { m_localPose = t; }
+pragma::math::Transform pragma::physics::BtShape::GetLocalPose() const { return m_localPose; }
 
 void pragma::physics::BtShape::ApplySurfaceMaterial(IMaterial &mat)
 {
@@ -224,7 +224,7 @@ bool pragma::physics::BtCompoundShape::IsValid() const
 void pragma::physics::BtCompoundShape::SetMass(float mass) { ICompoundShape::SetMass(mass); }
 float pragma::physics::BtCompoundShape::GetMass() const { return ICompoundShape::GetMass(); }
 void pragma::physics::BtCompoundShape::GetAABB(Vector3 &min, Vector3 &max) const { return ICompoundShape::GetAABB(min, max); }
-/*void pragma::physics::BtCompoundShape::AddShape(pragma::physics::IShape &shape,const umath::Transform &localPose)
+/*void pragma::physics::BtCompoundShape::AddShape(pragma::physics::IShape &shape,const pragma::math::Transform &localPose)
 {
 	auto &t = shape.GetLocalPose();
 	GetBtCompoundShape().addChildShape(static_cast<BtEnvironment&>(m_physEnv).CreateBtTransform(t),&dynamic_cast<BtShape&>(shape).GetBtShape());

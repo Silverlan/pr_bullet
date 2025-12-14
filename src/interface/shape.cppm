@@ -24,8 +24,8 @@ export namespace pragma::physics {
 		virtual void GetAABB(Vector3 &min, Vector3 &max) const override;
 		virtual void GetBoundingSphere(Vector3 &outCenter, float &outRadius) const override;
 
-		virtual void SetLocalPose(const umath::Transform &t) override;
-		virtual umath::Transform GetLocalPose() const override;
+		virtual void SetLocalPose(const pragma::math::Transform &t) override;
+		virtual pragma::math::Transform GetLocalPose() const override;
 
 		virtual void ApplySurfaceMaterial(IMaterial &mat) override;
 		virtual void SetMass(float mass) override;
@@ -39,7 +39,7 @@ export namespace pragma::physics {
 		std::shared_ptr<btCollisionShape> m_shape;
 	  private:
 		btCollisionShape *m_externalShape;
-		umath::Transform m_localPose = {};
+		pragma::math::Transform m_localPose = {};
 		bool m_bTrigger = false;
 		float m_mass = 0.f;
 	};

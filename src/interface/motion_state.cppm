@@ -24,14 +24,14 @@ export {
 
 	class KinematicMotionState : public SimpleMotionState {
 	  public:
-		KinematicMotionState(pragma::physics::BtCollisionObject &o, const umath::Transform &initialTransform = {});
+		KinematicMotionState(pragma::physics::BtCollisionObject &o, const pragma::math::Transform &initialTransform = {});
 		virtual ~KinematicMotionState() override;
 
-		umath::Transform &GetWorldTransform();
-		const umath::Transform &GetWorldTransform() const;
+		pragma::math::Transform &GetWorldTransform();
+		const pragma::math::Transform &GetWorldTransform() const;
 	  private:
 		virtual void getWorldTransform(btTransform &worldTrans) const override;
 		virtual void setWorldTransform(const btTransform &worldTrans) override;
-		umath::Transform m_transform = {};
+		pragma::math::Transform m_transform = {};
 	};
 }

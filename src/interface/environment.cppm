@@ -42,8 +42,8 @@ export namespace pragma::physics {
 		static const float CCD_SWEPT_SPHERE_RADIUS;
 	  public:
 		static void SimulationCallback(btDynamicsWorld *world, btScalar timeStep);
-		static umath::Transform CreateTransform(const btTransform &btTransform);
-		static btTransform CreateBtTransform(const umath::Transform &btTransform);
+		static pragma::math::Transform CreateTransform(const btTransform &btTransform);
+		static btTransform CreateBtTransform(const pragma::math::Transform &btTransform);
 		static Vector3 ToPragmaPosition(const btVector3 &pos);
 		static btVector3 ToBtPosition(const Vector3 &pos);
 		static Vector3 ToPragmaNormal(const btVector3 &n);
@@ -62,20 +62,20 @@ export namespace pragma::physics {
 		virtual void StartProfiling() override;
 		virtual void EndProfiling() override;
 
-		virtual util::TSharedHandle<IFixedConstraint> CreateFixedConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
-		virtual util::TSharedHandle<IBallSocketConstraint> CreateBallSocketConstraint(IRigidBody &a, const Vector3 &pivotA, IRigidBody &b, const Vector3 &pivotB) override;
-		virtual util::TSharedHandle<IHingeConstraint> CreateHingeConstraint(IRigidBody &a, const Vector3 &pivotA, IRigidBody &b, const Vector3 &pivotB, const Vector3 &axis) override;
-		virtual util::TSharedHandle<ISliderConstraint> CreateSliderConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
-		virtual util::TSharedHandle<IConeTwistConstraint> CreateConeTwistConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
-		virtual util::TSharedHandle<IDoFConstraint> CreateDoFConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
-		virtual util::TSharedHandle<IDoFSpringConstraint> CreateDoFSpringConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
+		virtual pragma::util::TSharedHandle<IFixedConstraint> CreateFixedConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
+		virtual pragma::util::TSharedHandle<IBallSocketConstraint> CreateBallSocketConstraint(IRigidBody &a, const Vector3 &pivotA, IRigidBody &b, const Vector3 &pivotB) override;
+		virtual pragma::util::TSharedHandle<IHingeConstraint> CreateHingeConstraint(IRigidBody &a, const Vector3 &pivotA, IRigidBody &b, const Vector3 &pivotB, const Vector3 &axis) override;
+		virtual pragma::util::TSharedHandle<ISliderConstraint> CreateSliderConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
+		virtual pragma::util::TSharedHandle<IConeTwistConstraint> CreateConeTwistConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
+		virtual pragma::util::TSharedHandle<IDoFConstraint> CreateDoFConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
+		virtual pragma::util::TSharedHandle<IDoFSpringConstraint> CreateDoFSpringConstraint(IRigidBody &a, const Vector3 &pivotA, const Quat &rotA, IRigidBody &b, const Vector3 &pivotB, const Quat &rotB) override;
 
-		virtual util::TSharedHandle<IController> CreateCapsuleController(float halfWidth, float halfHeight, float stepHeight, float slopeLimitDeg = DEFAULT_CHARACTER_SLOPE_LIMIT, const umath::Transform &startTransform = {}) override;
-		virtual util::TSharedHandle<IController> CreateBoxController(const Vector3 &halfExtents, float stepHeight, float slopeLimitDeg = DEFAULT_CHARACTER_SLOPE_LIMIT, const umath::Transform &startTransform = {}) override;
-		virtual util::TSharedHandle<ICollisionObject> CreateCollisionObject(IShape &shape) override;
-		virtual util::TSharedHandle<IRigidBody> CreateRigidBody(IShape &shape, bool dynamic = true) override;
-		virtual util::TSharedHandle<ISoftBody> CreateSoftBody(const PhysSoftBodyInfo &info, float mass, const std::vector<Vector3> &verts, const std::vector<uint16_t> &indices, std::vector<uint16_t> &indexTranslations) override;
-		virtual util::TSharedHandle<IGhostObject> CreateGhostObject(IShape &shape) override;
+		virtual pragma::util::TSharedHandle<IController> CreateCapsuleController(float halfWidth, float halfHeight, float stepHeight, float slopeLimitDeg = DEFAULT_CHARACTER_SLOPE_LIMIT, const pragma::math::Transform &startTransform = {}) override;
+		virtual pragma::util::TSharedHandle<IController> CreateBoxController(const Vector3 &halfExtents, float stepHeight, float slopeLimitDeg = DEFAULT_CHARACTER_SLOPE_LIMIT, const pragma::math::Transform &startTransform = {}) override;
+		virtual pragma::util::TSharedHandle<ICollisionObject> CreateCollisionObject(IShape &shape) override;
+		virtual pragma::util::TSharedHandle<IRigidBody> CreateRigidBody(IShape &shape, bool dynamic = true) override;
+		virtual pragma::util::TSharedHandle<ISoftBody> CreateSoftBody(const PhysSoftBodyInfo &info, float mass, const std::vector<Vector3> &verts, const std::vector<uint16_t> &indices, std::vector<uint16_t> &indexTranslations) override;
+		virtual pragma::util::TSharedHandle<IGhostObject> CreateGhostObject(IShape &shape) override;
 
 		virtual std::shared_ptr<IConvexShape> CreateCapsuleShape(float halfWidth, float halfHeight, const IMaterial &mat) override;
 		virtual std::shared_ptr<IConvexShape> CreateBoxShape(const Vector3 &halfExtents, const IMaterial &mat) override;
@@ -87,8 +87,8 @@ export namespace pragma::physics {
 		virtual std::shared_ptr<ICompoundShape> CreateCompoundShape(std::vector<IShape *> &shapes) override;
 		virtual std::shared_ptr<IShape> CreateHeightfieldTerrainShape(uint32_t width, uint32_t length, double maxHeight, uint32_t upAxis, const IMaterial &mat) override;
 		virtual std::shared_ptr<IMaterial> CreateMaterial(float staticFriction, float dynamicFriction, float restitution) override;
-		virtual util::TSharedHandle<ICollisionObject> CreatePlane(const Vector3 &n, float d, const IMaterial &mat) override;
-		virtual util::TSharedHandle<IVehicle> CreateVehicle(const VehicleCreateInfo &vhcDesc) override;
+		virtual pragma::util::TSharedHandle<ICollisionObject> CreatePlane(const Vector3 &n, float d, const IMaterial &mat) override;
+		virtual pragma::util::TSharedHandle<IVehicle> CreateVehicle(const VehicleCreateInfo &vhcDesc) override;
 
 		virtual RemainingDeltaTime DoStepSimulation(float timeStep, int maxSubSteps = 1, float fixedTimeStep = (1.f / 60.f)) override;
 
@@ -111,13 +111,13 @@ export namespace pragma::physics {
 		const btSoftBodySolver *GetSoftBodySolver() const;
 
 		// For internal or debugging purposes only!
-		util::TSharedHandle<IFixedConstraint> AddFixedConstraint(std::unique_ptr<btFixedConstraint> c);
-		util::TSharedHandle<IBallSocketConstraint> AddBallSocketConstraint(std::unique_ptr<btPoint2PointConstraint> c);
-		util::TSharedHandle<IHingeConstraint> AddHingeConstraint(std::unique_ptr<btHingeConstraint> c);
-		util::TSharedHandle<ISliderConstraint> AddSliderConstraint(std::unique_ptr<btSliderConstraint> c);
-		util::TSharedHandle<IConeTwistConstraint> AddConeTwistConstraint(std::unique_ptr<btConeTwistConstraint> c);
-		util::TSharedHandle<IDoFConstraint> AddDoFConstraint(std::unique_ptr<btGeneric6DofConstraint> c);
-		util::TSharedHandle<IDoFSpringConstraint> AddDoFSpringConstraint(std::unique_ptr<btGeneric6DofSpring2Constraint> c);
+		pragma::util::TSharedHandle<IFixedConstraint> AddFixedConstraint(std::unique_ptr<btFixedConstraint> c);
+		pragma::util::TSharedHandle<IBallSocketConstraint> AddBallSocketConstraint(std::unique_ptr<btPoint2PointConstraint> c);
+		pragma::util::TSharedHandle<IHingeConstraint> AddHingeConstraint(std::unique_ptr<btHingeConstraint> c);
+		pragma::util::TSharedHandle<ISliderConstraint> AddSliderConstraint(std::unique_ptr<btSliderConstraint> c);
+		pragma::util::TSharedHandle<IConeTwistConstraint> AddConeTwistConstraint(std::unique_ptr<btConeTwistConstraint> c);
+		pragma::util::TSharedHandle<IDoFConstraint> AddDoFConstraint(std::unique_ptr<btGeneric6DofConstraint> c);
+		pragma::util::TSharedHandle<IDoFSpringConstraint> AddDoFSpringConstraint(std::unique_ptr<btGeneric6DofSpring2Constraint> c);
 
 		uint64_t GetCurrentSimulationStepIndex() const { return m_curSimStepIndex; }
 		void PushEvent(const std::function<void()> &ev) { m_events.push(ev); }

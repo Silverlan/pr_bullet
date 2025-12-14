@@ -24,7 +24,7 @@ export {
 			enum class BtStateFlags : uint32_t { None = 0u, CcdEnabled = 1u, Awake = CcdEnabled << 1u, WorldObjectRemoved = Awake << 1u };
 			friend IEnvironment;
 			btCollisionObject &GetInternalObject() const;
-			virtual void InitializeLuaHandle(const util::TWeakSharedHandle<IBase> &handle) override;
+			virtual void InitializeLuaHandle(const pragma::util::TWeakSharedHandle<IBase> &handle) override;
 			btCollisionObject &GetBtCollisionObject();
 			virtual BtRigidBody *GetBtRigidBody();
 			const BtRigidBody *GetBtRigidBody() const;
@@ -47,7 +47,7 @@ export {
 			virtual void SetTrigger(bool bTrigger) override;
 			virtual bool IsTrigger() const override;
 
-			virtual void TransformLocalPose(const umath::Transform &t) override;
+			virtual void TransformLocalPose(const pragma::math::Transform &t) override;
 
 			virtual void SetSleepReportEnabled(bool reportEnabled) override;
 			virtual bool IsSleepReportEnabled() const override;
@@ -65,10 +65,10 @@ export {
 			virtual void SetPos(const Vector3 &pos) override;
 			virtual Quat GetRotation() const override;
 			virtual void SetRotation(const Quat &rot) override;
-			virtual umath::Transform GetBaseTransform() override;
-			virtual void SetBaseTransform(const umath::Transform &t) override;
-			virtual umath::Transform GetWorldTransform() override;
-			virtual void SetWorldTransform(const umath::Transform &t) override;
+			virtual pragma::math::Transform GetBaseTransform() override;
+			virtual void SetBaseTransform(const pragma::math::Transform &t) override;
+			virtual pragma::math::Transform GetWorldTransform() override;
+			virtual void SetWorldTransform(const pragma::math::Transform &t) override;
 
 			virtual void SetSimulationEnabled(bool b) override;
 			virtual bool IsSimulationEnabled() const override;
@@ -91,8 +91,8 @@ export {
 			} m_simState {};
 			BtStateFlags m_btStateFlags = BtStateFlags::None;
 			uint64_t m_lastTickAwake = std::numeric_limits<uint64_t>::max();
-			umath::Transform m_localPose {};
-			umath::Transform m_localPoseInv {};
+			pragma::math::Transform m_localPose {};
+			pragma::math::Transform m_localPoseInv {};
 		};
 
 		class BtRigidBody : public BtCollisionObject, public IRigidBody, public networking::VelocityCorrection {
@@ -194,7 +194,7 @@ export {
 			virtual void SetPos(const Vector3 &pos) override;
 			virtual void SetRotation(const Quat &rot) override;
 			virtual Quat GetRotation() const override;
-			virtual void SetWorldTransform(const umath::Transform &t) override;
+			virtual void SetWorldTransform(const pragma::math::Transform &t) override;
 
 			virtual void UpdateLinearVelocity() override;
 
@@ -306,7 +306,7 @@ export {
 			virtual void DoAddWorldObject() override;
 			virtual void RemoveWorldObject() override;
 		};
-		using namespace umath::scoped_enum::bitwise;
+		using namespace pragma::math::scoped_enum::bitwise;
 	};
 	REGISTER_ENUM_FLAGS(pragma::physics::BtCollisionObject::BtStateFlags)
 };
