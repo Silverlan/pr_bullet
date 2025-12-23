@@ -67,20 +67,15 @@ set(BT_TARGETS
 	BulletRoboticsGUI
 )
 
-if(UNIX)
-	foreach(target ${BT_TARGETS})
-		if(TARGET ${target})
-			set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-		endif()
-	endforeach()
-elseif(WIN32)
-	foreach(target ${BT_TARGETS})
-		if(TARGET ${target})
+
+foreach(target ${BT_TARGETS})
+	if(TARGET ${target})
+		if(MSVC)
 			target_compile_options(${target} PUBLIC "/MD")
-			set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 		endif()
-	endforeach()
-endif()
+		set_target_properties(${target} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+	endif()
+endforeach()
 
 foreach(target ${BT_TARGETS})
 	if(TARGET ${target})
