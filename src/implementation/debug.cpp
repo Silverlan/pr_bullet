@@ -37,7 +37,7 @@ void pragma::physics::BtVisualDebugger::drawContactPoint(const btVector3 &pointO
 }
 void pragma::physics::BtVisualDebugger::reportErrorWarning(const char *warningString)
 {
-	Con::cwar << "[BULLET] " << warningString << Con::endl;
+	Con::CWAR << "[BULLET] " << warningString << Con::endl;
 	ReportErrorWarning(warningString);
 };
 void pragma::physics::BtVisualDebugger::draw3dText(const btVector3 &pos, const char *str)

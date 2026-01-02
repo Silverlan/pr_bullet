@@ -227,11 +227,11 @@ static void bt_profile_manager_dump_recursive(CProfileIterator *profileIterator,
 	int i;
 	int frames_since_reset = CProfileManager::Get_Frame_Count_Since_Reset();
 	for(i = 0; i < spacing; i++)
-		Con::cout << ".";
-	Con::cout << "----------------------------------\n";
+		Con::COUT << ".";
+	Con::COUT << "----------------------------------\n";
 	for(i = 0; i < spacing; i++)
-		Con::cout << ".";
-	Con::cout << "Profiling: " << profileIterator->Get_Current_Parent_Name() << " (total running time: " << parent_time << " ms) ---\n";
+		Con::COUT << ".";
+	Con::COUT << "Profiling: " << profileIterator->Get_Current_Parent_Name() << " (total running time: " << parent_time << " ms) ---\n";
 	float totalTime = 0.f;
 
 	int numChildren = 0;
@@ -244,9 +244,9 @@ static void bt_profile_manager_dump_recursive(CProfileIterator *profileIterator,
 		{
 			int i;
 			for(i = 0; i < spacing; i++)
-				Con::cout << ".";
+				Con::COUT << ".";
 		}
-		Con::cout << i << " -- " << profileIterator->Get_Current_Name() << " (" << fraction << " %%) :: " << (current_total_time / (double)frames_since_reset) << " ms / frame (" << profileIterator->Get_Current_Total_Calls() << " calls)\n";
+		Con::COUT << i << " -- " << profileIterator->Get_Current_Name() << " (" << fraction << " %%) :: " << (current_total_time / (double)frames_since_reset) << " ms / frame (" << profileIterator->Get_Current_Total_Calls() << " calls)\n";
 		totalTime += current_total_time;
 		//recurse into children
 	}
@@ -255,8 +255,8 @@ static void bt_profile_manager_dump_recursive(CProfileIterator *profileIterator,
 		//printf("what's wrong\n");
 	}
 	for(i = 0; i < spacing; i++)
-		Con::cout << ".";
-	Con::cout << "Unaccounted: (" << (parent_time > SIMD_EPSILON ? ((parent_time - accumulated_time) / parent_time) * 100 : 0.f) << " %%) :: " << (parent_time - accumulated_time) << " ms\n";
+		Con::COUT << ".";
+	Con::COUT << "Unaccounted: (" << (parent_time > SIMD_EPSILON ? ((parent_time - accumulated_time) / parent_time) * 100 : 0.f) << " %%) :: " << (parent_time - accumulated_time) << " ms\n";
 
 	for(i = 0; i < numChildren; i++) {
 		profileIterator->Enter_Child(i);
@@ -286,10 +286,10 @@ void pragma::physics::BtEnvironment::StartProfiling()
 void pragma::physics::BtEnvironment::EndProfiling()
 {
 #ifdef BT_ENABLE_PROFILE
-	Con::cout << "-------- Physics Profiler Results --------" << Con::endl;
+	Con::COUT << "-------- Physics Profiler Results --------" << Con::endl;
 	// CProfileManager::dumpAll(); // dumpAll uses printf, which we can't use
-	bt_profile_manager_dump_all(); // Same as CProfileManager::dumpAll, but uses Con::cout instead of printf
-	Con::cout << "------------------------------------------" << Con::endl;
+	bt_profile_manager_dump_all(); // Same as CProfileManager::dumpAll, but uses Con::COUT instead of printf
+	Con::COUT << "------------------------------------------" << Con::endl;
 #endif
 }
 void pragma::physics::BtEnvironment::SimulationCallback(btDynamicsWorld *world, btScalar timeStep)
@@ -589,7 +589,7 @@ struct Vector3d {
 static std::unique_ptr<btSoftBody> createSoftBody(const pragma::physics::PhysSoftBodyInfo &sbInfo, btSoftRigidDynamicsWorld *world, btSoftBodyWorldInfo *info, float mass, std::vector<Vector3d> &verts, std::vector<int32_t> indices)
 {
 	if(mass == 0.f) {
-		Con::cwar << "Attempted to create soft-body object with mass of 0! Using mass of 1 instead..." << Con::endl;
+		Con::CWAR << "Attempted to create soft-body object with mass of 0! Using mass of 1 instead..." << Con::endl;
 		mass = 1.f;
 	}
 	auto cloth = std::unique_ptr<btSoftBody> {btSoftBodyHelpers::CreateFromTriMesh(*info, reinterpret_cast<btScalar *>(verts.data()), indices.data(), indices.size() / 3, true)};

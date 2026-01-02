@@ -464,7 +464,7 @@ void _btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectW
 	if(colObj0Wrap->getCollisionShape()->getShapeType() != TRIANGLE_SHAPE_PROXYTYPE)
 	{
 		//if(pragma::math::abs(1.f -pragma::math::abs(cp.m_normalWorldOnB.y())) > 0.2)
-		//	Con::cwar<<cp.m_normalWorldOnB.x()<<","<<cp.m_normalWorldOnB.y()<<","<<cp.m_normalWorldOnB.z()<<Con::endl;
+		//	Con::CWAR<<cp.m_normalWorldOnB.x()<<","<<cp.m_normalWorldOnB.y()<<","<<cp.m_normalWorldOnB.z()<<Con::endl;
 #if CONVEX_NORMAL_EDGE_RESOLVE == 1
 		auto *obj0 = static_cast<PhysCollisionObject*>(colObj0Wrap->getCollisionObject()->getUserPointer());
 		auto *obj1 = static_cast<PhysCollisionObject*>(colObj1Wrap->getCollisionObject()->getUserPointer());
@@ -507,14 +507,14 @@ void _btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectW
 						if(game->IsClient() == true)
 							game->DrawLine(posA,posB,colors::Red,12.f);
 						auto d = posB -posA;
-						//Con::cwar<<"Delta: ("<<d.x<<","<<d.y<<","<<d.z<<")"<<Con::endl;
+						//Con::CWAR<<"Delta: ("<<d.x<<","<<d.y<<","<<d.z<<")"<<Con::endl;
 
 						src = posA;//ent1->GetPosition() +ent1->GetCollisionCenter();//posA;
 						dst = posB;//ent1->GetPosition() +ent1->GetCollisionCenter() -Vector3(0,100,0);//posB;
 					}
 
 					//std::cout<<"Test Vector: "<<x.x()<<","<<x.y()<<","<<x.z()<<std::endl;
-					//Con::cwar<<"Start: ("<<src.x<<","<<src.y<<","<<src.z<<") ("<<dst.x<<","<<dst.y<<","<<dst.z<<")"<<Con::endl;
+					//Con::CWAR<<"Start: ("<<src.x<<","<<src.y<<","<<src.z<<") ("<<dst.x<<","<<dst.y<<","<<dst.z<<")"<<Con::endl;
 					
 					TraceData data {};
 					data.SetSource(src);
@@ -559,7 +559,7 @@ void _btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectW
 
 						auto &r = results.front();
 
-						//Con::cwar<<"Trace Hit: "<<ent0->GetClass()<<"! ("<<r.normal.x<<","<<r.normal.y<<","<<r.normal.z<<")"<<Con::endl;
+						//Con::CWAR<<"Trace Hit: "<<ent0->GetClass()<<"! ("<<r.normal.x<<","<<r.normal.y<<","<<r.normal.z<<")"<<Con::endl;
 						cp.m_normalWorldOnB = {n.x,n.y,n.z}; // Temproary 'fix' for buggy vehicle physics
 
 						auto d = uvec::dot(r.normal,{0.f,1.f,0.f});
@@ -570,7 +570,7 @@ void _btAdjustInternalEdgeContacts(btManifoldPoint& cp, const btCollisionObjectW
 					}
 					else
 					{
-						//Con::cwar<<"Trace didn't Hit! ("<<dir.x<<","<<dir.y<<","<<dir.z<<")"<<Con::endl;
+						//Con::CWAR<<"Trace didn't Hit! ("<<dir.x<<","<<dir.y<<","<<dir.z<<")"<<Con::endl;
 						//cp.m_normalWorldOnB = {0,1,0}; // Temproary 'fix' for buggy vehicle physics
 					}
 				}
