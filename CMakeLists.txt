@@ -1,7 +1,7 @@
 include(${CMAKE_SOURCE_DIR}/cmake/pr_common.cmake)
 
 set(PROJ_NAME pr_bullet)
-pr_add_module(${PROJ_NAME} SHARED "modules/physics_engines/bullet/")
+pr_add_module(${PROJ_NAME} "modules/physics_engines/bullet/")
 
 set(PHYS_WORLD_TYPE "PHYS_WORLD_TYPE_DISCRETE_DYNAMICS_MT"
     CACHE STRING "Physics world type (select one)."
