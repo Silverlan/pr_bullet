@@ -44,7 +44,7 @@ const double pragma::physics::BtEnvironment::WORLD_SCALE_SQR = pragma::math::pow
 const float pragma::physics::BtEnvironment::CCD_MOTION_THRESHOLD = 4.f * static_cast<float>(WORLD_SCALE);
 const float pragma::physics::BtEnvironment::CCD_SWEPT_SPHERE_RADIUS = 2.f * static_cast<float>(WORLD_SCALE);
 static const float PHYS_CONSTRAINT_DEBUG_DRAW_SIZE = 100.f;
-static const auto PHYS_BULLET_BROADPHASE_TYPE = BulletBroadphaseType::AxisSweep3_32Bit;
+static const auto PHYS_BULLET_BROADPHASE_TYPE = BulletBroadphaseType::Dbvt;
 
 namespace pragma::physics {
 	class BtDebugDrawer : public btIDebugDraw {
